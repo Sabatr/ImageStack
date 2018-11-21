@@ -5,7 +5,14 @@ import Dialog from '@material-ui/core/Dialog';
 import DialogTitle from '@material-ui/core/DialogTitle';
 import DialogContent from '@material-ui/core/DialogContent';
 import DialogActions from '@material-ui/core/DialogActions';
-// import { BrowserRouter as Router, Route, Link } from 'react-router-dom';
+import createStyles from '@material-ui/core/styles/createStyles';
+import withStyles, { WithStyles } from '@material-ui/core/styles/withStyles';
+import withRoot from '../MainScreen/WithRoot';
+import purple from '@material-ui/core/colors/purple'
+// import { withStyles, Theme } from '@material-ui/core/styles';
+import { Theme } from '../../../node_modules/@material-ui/core';
+// import { BrowserRouter as Router, Route } from 'react-router-dom';
+// import UserScreen from '../MainScreen/UserScreen';
 // import UserScreen from '../MainScreen/UserScreen';
 // import Panel from './Panel';
 
@@ -17,8 +24,22 @@ interface ILogInState {
         username: any
 }
 
+const styles = (theme: Theme) =>
+  createStyles({
+        root: {
+        color: theme.palette.background.paper
+        },
+        cssRoot: {
+                color: theme.palette.getContrastText(purple[500]),
+                backgroundColor: purple[500],
+                '&:hover': {
+                  backgroundColor: purple[700],
+                },
+              }
+  });
 
-export default class LogInPanel extends React.Component<{},ILogInState> {
+
+class LogInPanel extends React.Component<WithStyles<typeof styles>,ILogInState> {
         constructor(props: any) {
                 super(props);
                 this.state = ({
@@ -29,12 +50,15 @@ export default class LogInPanel extends React.Component<{},ILogInState> {
                         username: "",
                 })
 
+                this.handleLogInClick = this.handleLogInClick.bind(this);
+
         }
 
         public render() {
                 return (
                         <div>
-                                <div style={{ alignItems: 'center', paddingTop: '15%',paddingBottom: '20px'}}>
+                                <div style={{ alignItems: 'center', paddingTop: '15%',paddingBottom: '20px'}}
+                                className={this.props.classes.root}>
                                 <TextField 
                                 id="standard-search" 
                                 label="User Name"
@@ -51,7 +75,7 @@ export default class LogInPanel extends React.Component<{},ILogInState> {
                                 autoComplete="current-password" />
                                 </div>
                                 <div>
-                                <Button onClick={this.handleLogInClick}>Log In </Button>
+                                <Button className={this.props.classes.cssRoot} onClick={this.handleLogInClick}>Log In </Button>
                                 </div>
                                 <div>
                                 <Button onClick={this.handleOnCreate}>Create Account</Button>
@@ -216,3 +240,5 @@ export default class LogInPanel extends React.Component<{},ILogInState> {
 
 
 }
+
+export default withRoot(withStyles(styles)(LogInPanel));
