@@ -1,0 +1,14 @@
+D:\ForStudents\BackEndApi\BackEndApi\bin\Debug\netcoreapp2.1\BackEndApi.deps.json
+D:\ForStudents\BackEndApi\BackEndApi\bin\Debug\netcoreapp2.1\BackEndApi.runtimeconfig.json
+D:\ForStudents\BackEndApi\BackEndApi\bin\Debug\netcoreapp2.1\BackEndApi.runtimeconfig.dev.json
+D:\ForStudents\BackEndApi\BackEndApi\bin\Debug\netcoreapp2.1\BackEndApi.dll
+D:\ForStudents\BackEndApi\BackEndApi\obj\Debug\netcoreapp2.1\BackEndApi.csprojAssemblyReference.cache
+D:\ForStudents\BackEndApi\BackEndApi\obj\Debug\netcoreapp2.1\BackEndApi.csproj.CoreCompileInputs.cache
+D:\ForStudents\BackEndApi\BackEndApi\obj\Debug\netcoreapp2.1\BackEndApi.RazorAssemblyInfo.cache
+D:\ForStudents\BackEndApi\BackEndApi\obj\Debug\netcoreapp2.1\BackEndApi.RazorAssemblyInfo.cs
+D:\ForStudents\BackEndApi\BackEndApi\obj\Debug\netcoreapp2.1\BackEndApi.AssemblyInfoInputs.cache
+D:\ForStudents\BackEndApi\BackEndApi\obj\Debug\netcoreapp2.1\BackEndApi.AssemblyInfo.cs
+D:\ForStudents\BackEndApi\BackEndApi\obj\Debug\netcoreapp2.1\BackEndApi.RazorTargetAssemblyInfo.cache
+D:\ForStudents\BackEndApi\BackEndApi\bin\Debug\netcoreapp2.1\BackEndApi.pdb
+D:\ForStudents\BackEndApi\BackEndApi\obj\Debug\netcoreapp2.1\BackEndApi.dll
+D:\ForStudents\BackEndApi\BackEndApi\obj\Debug\netcoreapp2.1\BackEndApi.pdb
