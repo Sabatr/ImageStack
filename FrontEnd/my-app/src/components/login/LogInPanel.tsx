@@ -109,8 +109,6 @@ class LogInPanel extends React.Component<WithStyles<typeof styles>,ILogInState> 
                 );
         }
 
-
-
         public makeSideBar = () => {
                 return (
                         <div>
@@ -225,10 +223,6 @@ class LogInPanel extends React.Component<WithStyles<typeof styles>,ILogInState> 
                 })
         }
         
-
-
-
-
 }
 
 export default withRoot(withStyles(styles)(LogInPanel));
