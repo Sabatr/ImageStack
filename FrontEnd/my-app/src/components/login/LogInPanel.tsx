@@ -4,22 +4,24 @@ import * as React from "react";
 import Dialog from '@material-ui/core/Dialog';
 import DialogTitle from '@material-ui/core/DialogTitle';
 import DialogContent from '@material-ui/core/DialogContent';
-import DialogActions from '@material-ui/core/DialogActions';
 import createStyles from '@material-ui/core/styles/createStyles';
 import withStyles, { WithStyles } from '@material-ui/core/styles/withStyles';
 import withRoot from '../MainScreen/WithRoot';
 import purple from '@material-ui/core/colors/purple'
-// import { withStyles, Theme } from '@material-ui/core/styles';
+import ListItemText from '@material-ui/core/ListItemText';
+import MenuItem from '@material-ui/core/MenuItem';
+import PhotoScreen from '../MainScreen/PhotoScreen'
+import { Drawer, List, ListItem } from '../../../node_modules/@material-ui/core';
 import { Theme } from '../../../node_modules/@material-ui/core';
-// import { BrowserRouter as Router, Route } from 'react-router-dom';
-// import UserScreen from '../MainScreen/UserScreen';
-// import UserScreen from '../MainScreen/UserScreen';
-// import Panel from './Panel';
+import Create from './Create';
+import Forgot from './Forgot';
 
 interface ILogInState {
         correctLogin: boolean,
         createOpen : boolean,
         forgotPasswordOpen: boolean,
+        open: boolean,
+        profileOpen: boolean,
         password: any,
         username: any
 }
@@ -46,6 +48,8 @@ class LogInPanel extends React.Component<WithStyles<typeof styles>,ILogInState> 
                         correctLogin: false,
                         createOpen: false,
                         forgotPasswordOpen: false,
+                        open: false,
+                        profileOpen: false,
                         password: "",
                         username: "",
                 })
@@ -57,121 +61,131 @@ class LogInPanel extends React.Component<WithStyles<typeof styles>,ILogInState> 
         public render() {
                 return (
                         <div>
-                                <div style={{ alignItems: 'center', paddingTop: '15%',paddingBottom: '20px'}}
-                                className={this.props.classes.root}>
-                                <TextField 
-                                id="standard-search" 
-                                label="User Name"
-                                onChange={this.handleUserChange}
-                                type="search" 
-                                />
-                                </div>
-                                <div style={{paddingBottom: '20px'}}>
-                                <TextField
-                                id="outlined-password-input"
-                                label="Password"
-                                type="password"
-                                onChange={this.handlePasswordchange}
-                                autoComplete="current-password" />
-                                </div>
-                                <div>
-                                <Button className={this.props.classes.cssRoot} onClick={this.handleLogInClick}>Log In </Button>
-                                </div>
-                                <div>
-                                <Button onClick={this.handleOnCreate}>Create Account</Button>
-                                </div>
-                                <div>
-                                <Button onClick={this.handleForgotPassword}>Forgot Password </Button>
-                                </div>
-                                {this.state.createOpen ? <this.makeCreate/>: null}
-                                {this.state.forgotPasswordOpen ? <this.makeForgot/>: null}
+                        { this.state.correctLogin ? <this.makePhotoScreen/> : <this.makeLogIn/>}
                         </div>
                 );
         }
+        
+        public makeLogIn = () => {
+        return (
+        <div>
+        <div style={{ alignItems: 'center', paddingTop: '15%',paddingBottom: '20px'}}
+        className={this.props.classes.root}>
+        <TextField 
+        id="standard-search" 
+        label="User Name"
+        onChange={this.handleUserChange}
+        type="search" 
+        />
+        </div>
+        <div style={{paddingBottom: '20px'}}>
+        <TextField
+        id="outlined-password-input"
+        label="Password"
+        type="password"
+        onChange={this.handlePasswordchange}
+        autoComplete="current-password" />
+        </div>
+        <div>
+        <Button className={this.props.classes.cssRoot} onClick={this.handleLogInClick}>Log In </Button>
+        </div>
+        <Create/>
+        <Forgot/>
+        </div>
+        )
+        }
 
-        public makeCreate = (props: any) => {
+        public makePhotoScreen = () => {
                 return (
                         <div>
-                        <Dialog
-                        open={true}
-                        aria-labelledby="form-dialog-title"
-                        onClose={this.handleOnCreateClose}
-                      >
-                        <DialogTitle id="form-dialog-title">Create Account</DialogTitle>
-                        <DialogContent>
-                          <TextField
-                            autoFocus={true}
-                            margin="dense"
-                            id="name"
-                            label="User Name"
-                            fullWidth={true}
-                          />
-                          <TextField
-                            id="outlined-password-input"
-                            margin="dense"
-                            label="Password"
-                            type="password"
-                            fullWidth={true}
-                          />
-                          <TextField
-                            id="outlined-password-input"
-                            margin="dense"
-                            label="Confirm Password"
-                            type="password"
-                            fullWidth={true}
-                          />
-                          <TextField
-                            margin="dense"
-                            id="name"
-                            label="Email Address"
-                            type="email"
-                            fullWidth={true}
-                          />
-                          
-                        </DialogContent>
-                        <DialogActions>
-                          <Button  color="primary" onClick={this.handleOnCreateClose}>
-                            Cancel
-                          </Button>
-                          <Button color="primary" onClick={this.handleCreateConfirm}>
-                            Create
-                          </Button>
-                        </DialogActions>
-                      </Dialog>
-                      </div>
+                <div className={this.props.classes.root}>
+                        <h2 style={{color: 'black'}}>Your Photos </h2>
+                        <this.makeSideBar/>
+                </div>
+                <div>
+                        <PhotoScreen />
+                </div>
+                </div>
                 );
         }
 
-        public makeForgot = () => {
+
+
+        public makeSideBar = () => {
                 return (
                         <div>
-                                <Dialog
-                                        open={true}
-                                        aria-labelledby="form-dialog-title"
-                                        onClose={this.handleForgotPasswordClose}
-                                > 
-                                <DialogTitle id="form-dialog-title">Forgot Password</DialogTitle>
-                                <DialogContent>
-                                <TextField
-                                margin="dense"
-                                id="name"
-                                label="Email Address"
-                                type="email"
-                                fullWidth={true}
-                                />
-                                </DialogContent>
-                                <DialogActions>
-                                        <Button  color="primary" onClick={this.handleForgotPasswordClose}>
-                                                Cancel
-                                        </Button>
-                                        <Button color="primary" onClick={this.handleForgotConfirm}>
-                                                Confirm
-                                        </Button>
-                                        </DialogActions>
-                                </Dialog>
+                        <Button onClick={this.handleMenuOpen}>Click me</Button>
+                        <Drawer anchor="right" open={this.state.open} onClose={this.handleMenuClose}>
+                            <MenuItem onClick={this.handleProfileClick}>
+                                <ListItemText primary="Profile" />
+                            </MenuItem>
+                            <MenuItem>
+                                <ListItemText primary="About" />
+                            </MenuItem>
+                            <MenuItem onClick={this.handleLogOut}>
+                                <ListItemText primary="Log out" />
+                            </MenuItem>
+                        </Drawer>
+                        <this.createProfileMenu/>
                         </div>
                 );
         }
+        public createProfileMenu = () => {
+                return (
+                    <Dialog 
+                    open={this.state.profileOpen} 
+                    onClose={this.handleProfileExit}
+                    >
+                            <DialogTitle id="form-dialog-title">Profile Information</DialogTitle>
+                            <DialogContent>
+                                <div style={{alignSelf:"left", alignItems: "left"}}>
+                                <List component="nav">
+                                    <ListItem button={true}>
+                                        <ListItemText primary="Profile"/>
+                                    </ListItem>
+                                    <ListItem button={true}>
+                                        <ListItemText primary="PLACEHOLDER"/>
+                                    </ListItem>
+                                </List>
+                                </div>
+                                <div>
+                                    <h2> placeholder text </h2>
+                                </div>      
+                            </DialogContent>
+                    </Dialog>
+                );
+            }
+
+        public handleMenuOpen = () => {
+                this.setState({
+                    open: true
+                })
+            }
+    
+            public handleMenuClose = () => {
+                this.setState({
+                    open: false  
+                })
+            }
+    
+            public handleLogOut = () => {
+                    // RESETS USER INFORMATION
+                this.handleMenuClose();
+                this.handleLogInClose();
+            }
+    
+            public handleProfileClick = () => {
+                this.setState({
+                    profileOpen: true
+                })
+                this.handleMenuClose();
+            }
+    
+            public handleProfileExit = () => {
+                this.setState({
+                    profileOpen: false
+                })
+            }
 
         /**
          * Handles when the username changes
@@ -200,43 +214,19 @@ class LogInPanel extends React.Component<WithStyles<typeof styles>,ILogInState> 
                 // 2. Check if the password entered corresponds to the user password.
                 // 3. If correct redirect to the next page.
                 console.log(this.state.username +" and password is "+ this.state.password);
-        }
-        
-        /**
-         * Creating the dialog for creating account
-         */
-        public handleOnCreate = () => {
                 this.setState({
-                        createOpen: true
+                        correctLogin: true
                 })
-        }
-        public handleOnCreateClose = () => {
-                this.setState({
-                        createOpen: false
-                })
-        }
-        public handleCreateConfirm = () => {
-                this.handleOnCreateClose();
-                // TODO: Do some confirming stuff and creating stuff
         }
 
-        /**
-         * Events for creating the forgot dialog
-         */
-        public handleForgotPassword = () => {
+        public handleLogInClose = () => {
                 this.setState({
-                        forgotPasswordOpen: true
+                        correctLogin: false
                 })
         }
-        public handleForgotPasswordClose = () => {
-                this.setState({
-                        forgotPasswordOpen: false
-                })
-        }
-        public handleForgotConfirm = () => {
-                this.handleForgotPasswordClose();
-                // TODO: Do some confirming stuff and creating stuff
-        }
+        
+
+
 
 
 }

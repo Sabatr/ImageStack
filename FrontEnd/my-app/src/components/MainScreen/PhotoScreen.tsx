@@ -10,12 +10,17 @@
 import createStyles from '@material-ui/core/styles/createStyles';
 import withStyles, { WithStyles } from '@material-ui/core/styles/withStyles';
 import withRoot from './WithRoot';
-import { Theme, Dialog, DialogContent } from '../../../node_modules/@material-ui/core';
+import { Theme, Dialog, DialogContent, Button, Paper, DialogTitle, DialogContentText, IconButton, DialogActions } from '../../../node_modules/@material-ui/core';
 // import { withStyles, Theme } from '@material-ui/core/styles';
 import GridList from '@material-ui/core/GridList';
 import GridListTile from '@material-ui/core/GridListTile';
 import GridListTileBar from '@material-ui/core/GridListTileBar';
 import tileData from './tileData';
+import Fullscreen from '@material-ui/icons/Fullscreen'
+import grey from '@material-ui/core/colors/grey'
+import Delete from '@material-ui/icons/Delete'
+import Edit from '@material-ui/icons/Edit'
+import Share from '@material-ui/icons/Share'
 const styles = (theme: Theme) =>
   createStyles({
     root: {
@@ -23,7 +28,6 @@ const styles = (theme: Theme) =>
         display: 'flex',
         flexWrap: 'wrap',
         justifyContent: 'space-around',
-        backgroundColor: theme.palette.background.paper,
       },
       gridList: {
         width: '100%',
@@ -31,13 +35,24 @@ const styles = (theme: Theme) =>
         '&:hover': {
         },
       },
+      dialogContent: {
+        height: '100%',
+        flexWrap: 'wrap',
+        width: '100%'
+      },
+      icon: {
+        color: grey[100]
+      }
   });
 
 
 interface IState {
   open: boolean,
   photoClick: boolean,
-  data: any
+  data: any,
+  add: boolean,
+  selectedPhoto: any,
+  confirmation: boolean,
 };
 
 class Index extends React.Component<WithStyles<typeof styles>, IState> {
@@ -47,8 +62,12 @@ class Index extends React.Component<WithStyles<typeof styles>, IState> {
             data: [],
             open: false,
             photoClick: false,
+            add: false,
+            selectedPhoto: "",
+            confirmation: false
         })
         // this.handlePhotoClick = this.handlePhotoClick.bind(this);
+        this.storeInfo = this.storeInfo.bind(this);
     }
 
   public handleClose = () => {
@@ -63,16 +82,34 @@ class Index extends React.Component<WithStyles<typeof styles>, IState> {
     });
   };
 
+  public handleAdd = () => {
+      // Should also add to the api. Then when it rerenders it will include the api with it.
+      this.state.data.push({
+          img: "https://i.redd.it/11xik28odlz11.jpg",
+          title: "TestingADd",
+          date: '21/11/2018',
+          description: "me",
+          id: 14
+      })
+      this.forceUpdate();
+  }
+
   public render() {
     return (
-      <div className={this.props.classes.root}>
+      <div className={this.props.classes.root} style={{textAlign: 'center'}}>
+      <Button onClick={this.handleAdd}>Add</Button>
       <GridList cellHeight={350} cols={5} className={this.props.classes.gridList}>
-        {tileData.map(tile => (
-          <GridListTile key={tile.img} onClick={this.handlePhotoClick}>
+        {this.state.data.map((tile: any) => (
+          <GridListTile key={tile.id}>
             <img src={tile.img} alt={tile.title} />
             <GridListTileBar
               title={tile.title}
-              subtitle={<span>by: {tile.author}</span>}
+              subtitle={<span>Made on: {tile.date}</span>}
+              actionIcon={
+                <IconButton onClick={this.handlePhotoClick.bind(this,tile)}>
+                    <Fullscreen className={this.props.classes.icon}/>
+                </IconButton>
+              }
             />
           </GridListTile>
         ))}
@@ -82,21 +119,98 @@ class Index extends React.Component<WithStyles<typeof styles>, IState> {
     );
   }
 
+  public storeInfo() {
+      const list:any = []
+      tileData.map(tile => list.push(tile));
+      this.setState({
+          data: list
+      })
+  }
+
+  public componentDidMount() {
+    this.storeInfo();
+}
+
   public displayContent = () => {
       return (
-        <Dialog open={this.state.photoClick} onClose={this.handlePhotoClose}>
-            <DialogContent>
-                {this.state.data}
+        <Paper>
+        <Dialog open={this.state.photoClick} 
+        onClose={this.handlePhotoClose} 
+        scroll='body'
+        fullWidth={true} 
+        aria-labelledby="scroll-dialog-title">
+        <DialogTitle id="form-dialog-title">{this.state.selectedPhoto.title}</DialogTitle>
+            <DialogContent className={this.state.selectedPhoto.title} >
+                <DialogContentText>{this.state.selectedPhoto.description} </DialogContentText>
+                <img src={this.state.selectedPhoto.img} height='100%' width='100%'/>
+                <IconButton><Edit/> </IconButton>
+                <IconButton onClick={this.handleDeleteClick}>
+                  <Delete/>
+                </IconButton>
+                <this.confirmDelete/>
+                <IconButton><Share/></IconButton>
             </DialogContent>
         </Dialog>
+        </Paper>
       );
   }
 
-  public handlePhotoClick = () => {
-      console.log("hi");
+  public handleDeleteClick = () => {
+    this.setState({
+      confirmation: true
+    });
+  }
+
+  public handleDeleteClose = () => {
+    this.setState({
+      confirmation: false
+    })
+  }
+
+  public handleDeleteConfirm = () => {
+    this.deletePhoto();
+    this.handleDeleteClose();
+    this.handlePhotoClose();
+  }
+  public confirmDelete = () => {
+    return (
+      <Dialog open={this.state.confirmation} 
+      onClose={this.handleDeleteClose}>
+        <DialogContent>
+          <DialogContentText>
+            Do you wish to delete?
+          </DialogContentText>
+        </DialogContent>
+        <DialogActions>
+        <DialogActions>
+          <Button onClick={this.handleDeleteConfirm} color="primary">
+            Yes
+          </Button>
+          <Button onClick={this.handleDeleteClose} color="primary">
+            No
+          </Button>
+        </DialogActions>
+        </DialogActions>
+      </Dialog>
+    );
+  }
+
+  public deletePhoto() {
+    // DOES SOME STUFF TO DELETE FROM API TOO.
+    const list:any = this.state.data
+    const position:any = this.state.data.indexOf(this.state.selectedPhoto);
+    list.splice(position,1);
+    this.setState({
+      data: list
+    })
+  }
+
+  public handlePhotoClick = (tile: any) => {
       this.setState({
           photoClick: true,
+          selectedPhoto: this.state.data[this.state.data.indexOf(tile)]
       })
+
   }
 
   public handlePhotoClose = () => {

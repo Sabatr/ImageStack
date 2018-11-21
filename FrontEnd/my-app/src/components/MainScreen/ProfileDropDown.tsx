@@ -96,10 +96,6 @@ export default class ProfileDropDown extends React.Component<{},IDrawState> {
 
         public handleLogOut = () => {
             this.handleMenuClose();
-            return (
-                // TODO: Click should go back to the log in screen.
-                <h2> hi </h2>
-            )
         }
 
         public handleProfileClick = () => {
