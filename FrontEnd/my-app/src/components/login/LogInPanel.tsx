@@ -103,7 +103,7 @@ class LogInPanel extends React.Component<WithStyles<typeof styles>,ILogInState> 
                         <this.makeSideBar/>
                 </div>
                 <div>
-                        <PhotoScreen />
+                        <PhotoScreen username={this.state.username}/>
                 </div>
                 </div>
                 );

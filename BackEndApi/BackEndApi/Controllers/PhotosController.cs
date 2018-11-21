@@ -74,11 +74,7 @@ namespace BackEndApi.Controllers
             {
                 return BadRequest(ModelState);
             }
-            var user = await _context.User.FindAsync(id);
-            if (user == null)
-            {
-                return NotFound();
-            }
+
             if (id != photo.PhotoId)
             {
                 return BadRequest();

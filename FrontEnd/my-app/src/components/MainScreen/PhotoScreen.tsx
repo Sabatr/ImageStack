@@ -55,7 +55,11 @@ interface IState {
   confirmation: boolean,
 };
 
-class Index extends React.Component<WithStyles<typeof styles>, IState> {
+interface IProps extends WithStyles<typeof styles> {
+  username: any
+}
+
+class Index extends React.Component<IProps, IState > {
     constructor(props: any) {
         super(props);
         this.state = ({
@@ -95,6 +99,7 @@ class Index extends React.Component<WithStyles<typeof styles>, IState> {
   }
 
   public render() {
+    console.log(this.props.username)
     return (
       <div className={this.props.classes.root} style={{textAlign: 'center'}}>
       <Button onClick={this.handleAdd}>Add</Button>
