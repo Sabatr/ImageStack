@@ -278,6 +278,7 @@ class Index extends React.Component<IProps, IState> {
   public confirmEdit = () => {
     this.disableEdit();
     this.editInDataBase();
+    this.handlePhotoClose();
   }
 
   public async editInDataBase() {

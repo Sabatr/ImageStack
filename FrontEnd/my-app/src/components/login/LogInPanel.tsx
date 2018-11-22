@@ -15,6 +15,7 @@ import { Drawer, List, ListItem } from '../../../node_modules/@material-ui/core'
 import { Theme } from '../../../node_modules/@material-ui/core';
 import Create from './Create';
 import Forgot from './Forgot';
+import Loading from '../Loading';
 
 interface ILogInState {
         correctLogin: boolean,
@@ -24,6 +25,7 @@ interface ILogInState {
         profileOpen: boolean,
         password: any,
         username: any,
+        loading: boolean,
 }
 
 const styles = (theme: Theme) =>
@@ -52,6 +54,7 @@ class LogInPanel extends React.Component<WithStyles<typeof styles>, ILogInState>
                         profileOpen: false,
                         password: "",
                         username: "",
+                        loading: false
                 })
 
                 this.handleLogInClick = this.handleLogInClick.bind(this);
@@ -60,8 +63,9 @@ class LogInPanel extends React.Component<WithStyles<typeof styles>, ILogInState>
 
         public render() {
                 return (
-                        <div>
+                        <div>   
                                 {this.state.correctLogin ? <this.makePhotoScreen /> : <this.makeLogIn />}
+                                <Loading loaded={this.state.loading}/>
                         </div>
                 );
         }
@@ -235,11 +239,13 @@ class LogInPanel extends React.Component<WithStyles<typeof styles>, ILogInState>
          * @param userId 
          */
         public async getUserName(userId: string) {
+                this.isLoading();
                 const userDetails = await fetch("https://photostorageapi.azurewebsites.net/api/Users/" + this.state.username,
                         {
                                 method: 'GET'
                         })
                 if (!userDetails.ok || this.state.username === "") {
+                        this.hasLoaded();
                         alert("Incorrect user")
                 } else {
                         const userData = await userDetails.json();
@@ -250,7 +256,20 @@ class LogInPanel extends React.Component<WithStyles<typeof styles>, ILogInState>
                                         correctLogin: true
                                 })
                         }
+                        this.hasLoaded();
                 }
+        }
+
+        public hasLoaded = () => {
+                this.setState({
+                        loading: false
+                })
+        }
+
+        public isLoading = () => {
+                this.setState({
+                        loading:true
+                })
         }
 
         public handleLogInClose = () => {
