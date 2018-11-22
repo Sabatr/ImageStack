@@ -84,7 +84,7 @@ namespace BackEndApi.Controllers
 
         // POST: api/Users
         [HttpPost]
-        public async Task<IActionResult> PostUser([FromBody] User user)
+        public async Task<IActionResult> PostUser([FromForm] User user)
         {
             if (!ModelState.IsValid)
             {

@@ -108,27 +108,6 @@ namespace BackEndApi.Controllers
             return NoContent();
         }
 
-        // POST: api/Photos
-        //[HttpPost("{id}")]
-        //public async Task<IActionResult> PostPhoto([FromBody] Photo photo, [FromRoute] string id)
-        //{
-        //    if (!ModelState.IsValid)
-        //    {
-        //        return BadRequest(ModelState);
-        //    }
-
-        //    var user = await _context.User.FindAsync(id);
-        //    if (user == null)
-        //    {
-        //        return NotFound();
-        //    }
-        //    photo.UserRefId = id;
-        //    _context.Photo.Add(photo);
-        //    await _context.SaveChangesAsync();
-
-        //    return CreatedAtAction("GetPhoto", new { id = photo.PhotoId }, photo);
-        //}
-
         // DELETE: api/Photos/5
         [HttpDelete("{id}")]
         public async Task<IActionResult> DeletePhoto([FromRoute] int id)
