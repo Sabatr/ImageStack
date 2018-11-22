@@ -1,5 +1,5 @@
 import * as React from 'react';
-import {  Dialog, DialogContent, Button,  DialogTitle, DialogActions, Input, IconButton } from '../../../node_modules/@material-ui/core';
+import { Dialog, DialogContent, Button, DialogTitle, DialogActions, Input, IconButton } from '../../../node_modules/@material-ui/core';
 import TextField from '@material-ui/core/TextField'
 import TakePhoto from './TakePhoto'
 import FileCopy from '@material-ui/icons/FileCopy'
@@ -16,15 +16,25 @@ interface IState {
     title: any,
     description: any,
     uploadFileList: any
+    imageFile: any,
+    typeOfButton: buttonClicked
 }
-class AddDialog extends React.Component<IProps,IState> {
+
+enum buttonClicked {
+    none,
+    camera,
+    upload
+}
+class AddDialog extends React.Component<IProps, IState> {
     constructor(props: any) {
         super(props);
         this.state = ({
             add: false,
             title: "",
             description: "",
-            uploadFileList: null
+            uploadFileList: null,
+            imageFile: null,
+            typeOfButton: buttonClicked.none
         })
         this.handleFileUpload = this.handleFileUpload.bind(this);
     }
@@ -32,106 +42,132 @@ class AddDialog extends React.Component<IProps,IState> {
     public render() {
         return (
             <div>
-            <Button onClick={this.handleOnCreate}>Add</Button>
-            <this.makeAddDialog/>
+                <Button onClick={this.handleOnCreate}>Add</Button>
+                <this.makeAddDialog />
             </div>
         )
     }
     public makeAddDialog = () => {
         return (
-          <div>
-            <Dialog
-              open={this.state.add}
-              aria-labelledby="form-dialog-title"
-              onClose={this.handleOnCreateClose}
-            >
-              <DialogTitle id="form-dialog-title">Add a photo</DialogTitle>
-              <DialogContent>
-                <TextField
-                  autoFocus={true}
-                  margin="dense"
-                  id="name"
-                  label="Title"
-                  fullWidth={true}
-                  onChange={this.handleTitleChange}
-                />
-                <TextField
-                  id="outlined-password-input"
-                  margin="dense"
-                  label="Description"
-                  rows={4}
-                  rowsMax={4}
-                  fullWidth={true}
-                  onChange={this.handleDescriptionChange}
-    
-                />
-                {this.state.uploadFileList === null ? 
-                    <div>
-                        <Input type="file" onChange={this.handleFileUpload} id="raised-button-file" className="form-control-file" style={{ display: 'none' }} />
-                        <label htmlFor="raised-button-file">
-                            <IconButton component="span"><FileCopy/></IconButton>
-                        </label>
-                        <TakePhoto/>
-                    </div>
-                :
-                    <div>
-                        <IconButton onClick={this.handleRemoveSelected}><ExitToApp/></IconButton>
-                        <h1>placeholdeer</h1>
-                    </div>
-                }
-              </DialogContent>
-              <DialogActions>
-                <Button color="primary" onClick={this.handleOnCreateClose}>
-                  Cancel
+            <div>
+                <Dialog
+                    open={this.state.add}
+                    aria-labelledby="form-dialog-title"
+                    onClose={this.handleOnCreateClose}
+                >
+                    <DialogTitle id="form-dialog-title">Add a photo</DialogTitle>
+                    <DialogContent>
+                        <TextField
+                            autoFocus={true}
+                            margin="dense"
+                            id="name"
+                            label="Title"
+                            fullWidth={true}
+                            onChange={this.handleTitleChange}
+                        />
+                        <TextField
+                            id="outlined-password-input"
+                            margin="dense"
+                            label="Description"
+                            rows={4}
+                            rowsMax={4}
+                            fullWidth={true}
+                            onChange={this.handleDescriptionChange}
+
+                        />
+                        {this.state.uploadFileList !== null || this.state.imageFile !== null ?
+                            <div>
+                                <IconButton onClick={this.handleRemoveSelected}><ExitToApp /></IconButton>
+                                <h1>placeholdeer</h1>
+                            </div>
+                            :
+                            <div>
+                                <Input type="file" onChange={this.handleFileUpload} id="raised-button-file" className="form-control-file" style={{ display: 'none' }} />
+                                <label htmlFor="raised-button-file">
+                                    <IconButton component="span"><FileCopy /></IconButton>
+                                </label>
+                                <TakePhoto handleFileUpload={this.convertBase64ToFile} />
+                            </div>
+                        }
+                    </DialogContent>
+                    <DialogActions>
+                        <Button color="primary" onClick={this.handleOnCreateClose}>
+                            Cancel
                       </Button>
-                <Button color="primary" onClick={this.handleAdd}>
-                  Add
+                        <Button color="primary" onClick={this.handleAdd}>
+                            Add
                 </Button>
-              </DialogActions>
-            </Dialog>
-          </div>
+                    </DialogActions>
+                </Dialog>
+            </div>
         )
-      }
+    }
 
-      public handleRemoveSelected = () => {
-          this.setState({
-              uploadFileList: null
-          })
-      }
-      public handleOnCreate = () => {
+    public handleRemoveSelected = () => {
         this.setState({
-          add: true
+            uploadFileList: null,
+            imageFile: null
         })
-      }
-      public handleOnCreateClose = () => {
+    }
+    public handleOnCreate = () => {
         this.setState({
-          add: false
+            add: true
         })
-      }  
-      public handleTitleChange = (event: any) => {
+    }
+    public handleOnCreateClose = () => {
         this.setState({
-          title: event.target.value
+            add: false
         })
-      }
+        this.handleRemoveSelected();
+    }
+    public handleTitleChange = (event: any) => {
+        this.setState({
+            title: event.target.value
+        })
+    }
+
+    public handleDescriptionChange = (event: any) => {
+        this.setState({
+            description: event.target.value
+        })
+    }
+
+    public handleFileUpload(fileList: any) {
+        this.setState({
+            uploadFileList: fileList.target.files,
+            typeOfButton: buttonClicked.upload
+        })
+    }
     
-      public handleDescriptionChange = (event: any) => {
-        this.setState({
-          description: event.target.value
-        })
-      }
-
-      public handleFileUpload(fileList: any) {
-        this.setState({
-          uploadFileList: fileList.target.files
-        })
-      }
-
-      public handleAdd = () => {
-        if (this.state.title === "" || this.state.uploadFileList === undefined) {
-          alert("no image selected");
-          return;
+    /**
+     * Converts base64 string to file.
+     * Credit: https://forums.meteor.com/t/base64-convert-back-to-file/34188
+     */
+    public convertBase64ToFile = (image: any) => {
+        const byteString = atob(image.split(',')[1]);
+        const arrayBuffer = new ArrayBuffer(byteString.length);
+        const int8array = new Uint8Array(arrayBuffer);
+        for (let i = 0; i < byteString.length; i += 1) {
+            int8array[i] = byteString.charCodeAt(i);
         }
-        const imageFile = this.state.uploadFileList[0]
+        const newBlob = new Blob([arrayBuffer], {
+            type: 'image/jpeg',
+        });
+
+        this.setState({
+            imageFile: newBlob,
+            typeOfButton: buttonClicked.camera
+        })
+    };
+
+    public handleAdd = () => {
+        if (this.state.title === "" || this.state.uploadFileList === undefined) {
+            alert("no image selected");
+            return;
+        }
+        let imageFile;
+        (this.state.typeOfButton === buttonClicked.upload) ? imageFile =
+            this.state.uploadFileList[0] : imageFile = this.state.imageFile
         // Should also add to the api. Then when it rerenders it will include the api with it.
         const formData = new FormData();
         formData.append("photoTitle", this.state.title);
@@ -140,22 +176,22 @@ class AddDialog extends React.Component<IProps,IState> {
         formData.append("image", imageFile);
         this.addNew(formData);
         this.handleOnCreateClose();
-      }
+    }
 
-      public async addNew(formData: FormData) {
+    public async addNew(formData: FormData) {
         const response = await fetch("https://photostorageapi.azurewebsites.net/api/Photos/Upload/" + this.props.username, {
-          body: formData,
-          headers: { 'cache-control': 'no-cache' },
-          method: 'POST'
+            body: formData,
+            headers: { 'cache-control': 'no-cache' },
+            method: 'POST'
         })
         if (response.ok) {
-          alert("Success!");
-          this.props.storeInfo();
-          this.forceUpdate();
+            alert("Success!");
+            this.props.storeInfo();
+            this.forceUpdate();
         } else {
-          alert(response.statusText);
+            alert(response.statusText);
         }
-      }
+    }
 }
 
 export default AddDialog
