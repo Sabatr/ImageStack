@@ -182,6 +182,7 @@ class Index extends React.Component<IProps, IState> {
     })
     if (response.ok) {
       alert("Success!");
+      this.storeInfo();
       this.forceUpdate();
     } else {
       alert(response.statusText);
@@ -189,6 +190,7 @@ class Index extends React.Component<IProps, IState> {
   }
 
   public handleFileUpload(fileList: any) {
+    console.log(fileList.target.files);
     this.setState({
       uploadFileList: fileList.target.files
     })
@@ -203,7 +205,7 @@ class Index extends React.Component<IProps, IState> {
             <GridListTile key={photo.photoId}>
               <img src={photo.photoUrl} alt={photo.photoTitle} />
               <GridListTileBar
-                title={photo.phototitle}
+                title={photo.photoTitle}
                 subtitle={<span>Made on: {photo.dateMade}</span>}
                 actionIcon={
                   <IconButton onClick={this.handlePhotoClick.bind(this, photo)} className={this.props.classes.icon}>
@@ -296,14 +298,18 @@ class Index extends React.Component<IProps, IState> {
     );
   }
 
-  public deletePhoto() {
-    // DOES SOME STUFF TO DELETE FROM API TOO.
-    const list: any = this.state.data
-    const position: any = this.state.data.indexOf(this.state.selectedPhoto);
-    list.splice(position, 1);
-    this.setState({
-      data: list
-    })
+  public async deletePhoto() {
+    // DOES SOME STUFF TO DELETE FROM API TOO
+    console.log(this.state.selectedPhoto.id);
+    const response = await fetch("https://photostorageapi.azurewebsites.net//api/Photos/" + this.state.selectedPhoto.photoId, {
+      method: 'DELETE'
+  })
+  if (response.ok) {
+    this.storeInfo();
+    this.forceUpdate();
+  } else {
+    alert(response.statusText)
+  }
   }
 
   public handlePhotoClick = (tile: any) => {
