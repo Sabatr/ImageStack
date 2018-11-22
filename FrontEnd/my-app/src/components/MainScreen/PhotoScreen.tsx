@@ -13,6 +13,9 @@ import Delete from '@material-ui/icons/Delete'
 import Edit from '@material-ui/icons/Edit'
 import Share from '@material-ui/icons/Share'
 import AddDialog from './AddDialog';
+import InputBase from '@material-ui/core/InputBase'
+import Check from '@material-ui/icons/Check'
+import Close from '@material-ui/icons/Close'
 const styles = (theme: Theme) =>
   createStyles({
     root: {
@@ -37,6 +40,15 @@ const styles = (theme: Theme) =>
       '&:hover': {
         color: grey[0],
       }
+    },
+    margin: {
+      margin: theme.spacing.unit,
+    },
+    dialogTitle: {
+      margin: theme.spacing.unit,
+      fontSize: 20,
+      paddingLeft: 15,
+      paddingTop: 15
     }
   });
 
@@ -50,7 +62,8 @@ interface IState {
   confirmation: boolean,
   description: any,
   title: any,
-  uploadFileList: any
+  uploadFileList: any,
+  editing: boolean
 };
 
 interface IProps extends WithStyles<typeof styles> {
@@ -69,24 +82,12 @@ class Index extends React.Component<IProps, IState> {
       confirmation: false,
       description: "",
       title: "",
-      uploadFileList: null
+      uploadFileList: null,
+      editing: false
     })
-    // this.handlePhotoClick = this.handlePhotoClick.bind(this);
     this.storeInfo = this.storeInfo.bind(this);
 
   }
-
-  public handleClose = () => {
-    this.setState({
-      open: false,
-    });
-  };
-
-  public handleClick = () => {
-    this.setState({
-      open: true,
-    });
-  };
 
   public render() {
     return (
@@ -113,18 +114,9 @@ class Index extends React.Component<IProps, IState> {
     );
   }
 
-  public async storeInfo() {
-    const photoList = await fetch("https://photostorageapi.azurewebsites.net/api/Photos/" + this.props.username);
-    const photoData = await photoList.json();
-    this.setState({
-      data: photoData
-    })
-  }
-
-  public componentDidMount() {
-    this.storeInfo();
-  }
-
+  /**
+   * Displays the popup when the user selects fullscreen
+   */
   public displayContent = () => {
     return (
       <Paper>
@@ -133,39 +125,53 @@ class Index extends React.Component<IProps, IState> {
           scroll='body'
           fullWidth={true}
           aria-labelledby="scroll-dialog-title">
-          <DialogTitle id="form-dialog-title">{this.state.selectedPhoto.photoTitle}</DialogTitle>
+          {!this.state.editing ?
+            <DialogTitle id="form-dialog-title">
+              {this.state.selectedPhoto.photoTitle}
+            </DialogTitle>
+            :
+            <InputBase className={this.props.classes.dialogTitle}
+              defaultValue={this.state.selectedPhoto.photoTitle}
+              onChange={this.handleTitleChange} 
+              autoFocus={true}/>
+          }
           <DialogContent className={this.state.selectedPhoto.photoTitle} >
-            <DialogContentText>{this.state.selectedPhoto.photoDescription} </DialogContentText>
+            {!this.state.editing ?
+              <DialogContentText>{this.state.selectedPhoto.photoDescription} </DialogContentText>
+              :
+              <InputBase
+                multiline={true}
+                fullWidth={true}
+                defaultValue={this.state.selectedPhoto.photoDescription}
+                onChange={this.handleDescriptionChange}
+              />
+            }
+
             <img src={this.state.selectedPhoto.photoUrl} height='100%' width='100%' />
-            <IconButton><Edit /> </IconButton>
-            <IconButton onClick={this.handleDeleteClick}>
-              <Delete />
-            </IconButton>
+            {!this.state.editing ?
+              <div>
+                <IconButton onClick={this.enableEdit}><Edit /> </IconButton>
+                <IconButton onClick={this.handleDeleteClick}>
+                  <Delete />
+                </IconButton>
+                <IconButton><Share /></IconButton>
+              </div>
+              :
+              <div>
+                <IconButton onClick={this.confirmEdit}><Check /></IconButton>
+                <IconButton onClick={this.disableEdit}><Close /></IconButton>
+              </div>
+            }
             <this.confirmDelete />
-            <IconButton><Share /></IconButton>
           </DialogContent>
         </Dialog>
       </Paper>
     );
   }
 
-  public handleDeleteClick = () => {
-    this.setState({
-      confirmation: true
-    });
-  }
-
-  public handleDeleteClose = () => {
-    this.setState({
-      confirmation: false
-    })
-  }
-
-  public handleDeleteConfirm = () => {
-    this.deletePhoto();
-    this.handleDeleteClose();
-    this.handlePhotoClose();
-  }
+  /**
+   * Creates the dialog for deletion
+   */
   public confirmDelete = () => {
     return (
       <Dialog open={this.state.confirmation}
@@ -189,9 +195,61 @@ class Index extends React.Component<IProps, IState> {
     );
   }
 
+  public handleClose = () => {
+    this.setState({
+      open: false,
+    });
+  };
+
+  public handleClick = () => {
+    this.setState({
+      open: true,
+    });
+  };
+
+  public async storeInfo() {
+    const photoList = await fetch("https://photostorageapi.azurewebsites.net/api/Photos/" + this.props.username);
+    const photoData = await photoList.json();
+    this.setState({
+      data: photoData
+    })
+  }
+
+  public componentDidMount() {
+    this.storeInfo();
+  }
+
+  public handleTitleChange = (event: any) => {
+    this.setState({
+      title: event.target.value
+    })
+  }
+
+  public handleDescriptionChange = (event: any) => {
+    this.setState({
+      description: event.target.value
+    })
+  }
+
+  public handleDeleteClick = () => {
+    this.setState({
+      confirmation: true
+    });
+  }
+
+  public handleDeleteClose = () => {
+    this.setState({
+      confirmation: false
+    })
+  }
+
+  public handleDeleteConfirm = () => {
+    this.deletePhoto();
+    this.handleDeleteClose();
+    this.handlePhotoClose();
+  }
+
   public async deletePhoto() {
-    // DOES SOME STUFF TO DELETE FROM API TOO
-    console.log(this.state.selectedPhoto.id);
     const response = await fetch("https://photostorageapi.azurewebsites.net//api/Photos/" + this.state.selectedPhoto.photoId, {
       method: 'DELETE'
     })
@@ -210,8 +268,24 @@ class Index extends React.Component<IProps, IState> {
     })
 
   }
+  
+  public enableEdit = () => {
+    this.setState({
+      editing: true
+    })
+  }
 
+  public disableEdit = () => {
+    this.setState({
+      editing: false
+    })
+  }
+
+  public confirmEdit = () => {
+    this.disableEdit();
+  }
   public handlePhotoClose = () => {
+    this.disableEdit();
     this.setState({
       photoClick: false
     })
