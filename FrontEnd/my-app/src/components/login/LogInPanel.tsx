@@ -153,7 +153,7 @@ class LogInPanel extends React.Component<WithStyles<typeof styles>, ILogInState>
                 );
         }
 
-        public handleDeleteButton =() => { 
+        public handleDeleteButton = () => {
                 this.deleteAccount(this.state.username);
                 this.handleProfileExit();
                 this.handleLogOut();
