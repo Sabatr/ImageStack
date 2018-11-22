@@ -150,7 +150,6 @@ class Create extends React.Component<{}, ICreate> {
       alert(response.statusText);
     } else {
       alert("Success")
-      location.reload();
     }
   }
 }

@@ -10,7 +10,7 @@ import * as React from 'react';
 import createStyles from '@material-ui/core/styles/createStyles';
 import withStyles, { WithStyles } from '@material-ui/core/styles/withStyles';
 import withRoot from './WithRoot';
-import { Theme, Dialog, DialogContent, Button, Paper, DialogTitle, DialogContentText, IconButton, DialogActions } from '../../../node_modules/@material-ui/core';
+import { Theme, Dialog, DialogContent, Button, Paper, DialogTitle, DialogContentText, IconButton, DialogActions, Input } from '../../../node_modules/@material-ui/core';
 // import { withStyles, Theme } from '@material-ui/core/styles';
 import GridList from '@material-ui/core/GridList';
 import GridListTile from '@material-ui/core/GridListTile';
@@ -20,6 +20,7 @@ import grey from '@material-ui/core/colors/grey'
 import Delete from '@material-ui/icons/Delete'
 import Edit from '@material-ui/icons/Edit'
 import Share from '@material-ui/icons/Share'
+import TextField from '@material-ui/core/TextField';
 const styles = (theme: Theme) =>
   createStyles({
     root: {
@@ -40,7 +41,10 @@ const styles = (theme: Theme) =>
       width: '100%'
     },
     icon: {
-      color: grey[100]
+      color: grey[100],
+      '&:hover': {
+        color: grey[0],
+      }
     }
   });
 
@@ -52,6 +56,9 @@ interface IState {
   add: boolean,
   selectedPhoto: any,
   confirmation: boolean,
+  description: any,
+  title: any,
+  uploadFileList: any
 };
 
 interface IProps extends WithStyles<typeof styles> {
@@ -67,10 +74,14 @@ class Index extends React.Component<IProps, IState> {
       photoClick: false,
       add: false,
       selectedPhoto: "",
-      confirmation: false
+      confirmation: false,
+      description: "",
+      title: "",
+      uploadFileList: null
     })
     // this.handlePhotoClick = this.handlePhotoClick.bind(this);
     this.storeInfo = this.storeInfo.bind(this);
+    this.handleFileUpload = this.handleFileUpload.bind(this);
   }
 
   public handleClose = () => {
@@ -85,22 +96,108 @@ class Index extends React.Component<IProps, IState> {
     });
   };
 
-  public handleAdd = () => {
-    // Should also add to the api. Then when it rerenders it will include the api with it.
-    this.state.data.push({
-      photoUrl: "https://i.redd.it/11xik28odlz11.jpg",
-      photoTitle: "TestingADd",
-      dateMade: '21/11/2018',
-      photoDescription: "me",
-      photoId: 14
+  public makeAddDialog = () => {
+    return (
+      <div>
+        <Dialog
+          open={this.state.add}
+          aria-labelledby="form-dialog-title"
+          onClose={this.handleOnCreateClose}
+        >
+          <DialogTitle id="form-dialog-title">Add a photo</DialogTitle>
+          <DialogContent>
+            <TextField
+              autoFocus={true}
+              margin="dense"
+              id="name"
+              label="Title"
+              fullWidth={true}
+              onChange={this.handleTitleChange}
+            />
+            <TextField
+              id="outlined-password-input"
+              margin="dense"
+              label="Description"
+              rows={4}
+              rowsMax={4}
+              fullWidth={true}
+              onChange={this.handleDescriptionChange}
+
+            />
+            <Input type="file" onChange={this.handleFileUpload} className="form-control-file" />
+          </DialogContent>
+          <DialogActions>
+            <Button color="primary" onClick={this.handleOnCreateClose}>
+              Cancel
+                  </Button>
+            <Button color="primary" onClick={this.handleAdd}>
+              Add
+                  </Button>
+          </DialogActions>
+        </Dialog>
+      </div>
+    )
+  }
+
+  public handleTitleChange = (event: any) => {
+    this.setState({
+      title: event.target.value
     })
-    this.forceUpdate();
+  }
+
+  public handleDescriptionChange = (event: any) => [
+    this.setState({
+      description: event.target.value
+    })
+  ]
+
+  public handleOnCreate = () => {
+    this.setState({
+      add: true
+    })
+  }
+  public handleOnCreateClose = () => {
+    this.setState({
+      add: false
+    })
+  }
+
+  public handleAdd = () => {
+    const imageFile = this.state.uploadFileList[0]
+    // Should also add to the api. Then when it rerenders it will include the api with it.
+    const formData = new FormData();
+    formData.append("photoTitle", this.state.title);
+    formData.append("photoDescription", this.state.description);
+    formData.append("userId",this.props.username);
+    formData.append("image",imageFile);
+    this.addNew(formData);
+    this.handleOnCreateClose();
+  }
+
+  public async addNew(formData: FormData) {
+    const response = await fetch("https://photostorageapi.azurewebsites.net/api/Photos/Upload/" + this.props.username, {
+      body: formData,
+      headers: { 'cache-control': 'no-cache' },
+      method: 'POST'
+    })
+    if (response.ok) {
+      alert("Success!");
+      this.forceUpdate();
+    } else {
+      alert(response.statusText);
+    }
+  }
+
+  public handleFileUpload(fileList: any) {
+    this.setState({
+      uploadFileList: fileList.target.files
+    })
   }
 
   public render() {
     return (
       <div className={this.props.classes.root} style={{ textAlign: 'center' }}>
-        <Button onClick={this.handleAdd}>Add</Button>
+        <Button onClick={this.handleOnCreate}>Add</Button>
         <GridList cellHeight={350} cols={5} className={this.props.classes.gridList}>
           {this.state.data.map((photo: any) => (
             <GridListTile key={photo.photoId}>
@@ -109,7 +206,7 @@ class Index extends React.Component<IProps, IState> {
                 title={photo.phototitle}
                 subtitle={<span>Made on: {photo.dateMade}</span>}
                 actionIcon={
-                  <IconButton onClick={this.handlePhotoClick.bind(this, photo)}>
+                  <IconButton onClick={this.handlePhotoClick.bind(this, photo)} className={this.props.classes.icon}>
                     <Fullscreen className={this.props.classes.icon} />
                   </IconButton>
                 }
@@ -118,6 +215,7 @@ class Index extends React.Component<IProps, IState> {
           ))}
         </GridList>
         <this.displayContent />
+        <this.makeAddDialog />
       </div>
     );
   }

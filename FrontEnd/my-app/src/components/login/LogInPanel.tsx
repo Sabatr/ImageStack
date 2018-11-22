@@ -132,8 +132,7 @@ class LogInPanel extends React.Component<WithStyles<typeof styles>, ILogInState>
                 return (
                         <Dialog
                                 open={this.state.profileOpen}
-                                onClose={this.handleProfileExit}
-                        >
+                                onClose={this.handleProfileExit}>
                                 <DialogTitle id="form-dialog-title">Profile Information</DialogTitle>
                                 <DialogContent>
                                         <div style={{ alignSelf: "left", alignItems: "left" }}>
@@ -141,8 +140,8 @@ class LogInPanel extends React.Component<WithStyles<typeof styles>, ILogInState>
                                                         <ListItem button={true}>
                                                                 <ListItemText primary="Profile" />
                                                         </ListItem>
-                                                        <ListItem button={true}>
-                                                                <ListItemText primary="PLACEHOLDER" />
+                                                        <ListItem button={true} onClick={this.handleDeleteButton}>
+                                                                <ListItemText primary="Delete Account" />
                                                         </ListItem>
                                                 </List>
                                         </div>
@@ -152,6 +151,23 @@ class LogInPanel extends React.Component<WithStyles<typeof styles>, ILogInState>
                                 </DialogContent>
                         </Dialog>
                 );
+        }
+
+        public handleDeleteButton =() => { 
+                this.deleteAccount(this.state.username);
+                this.handleProfileExit();
+                this.handleLogOut();
+        }
+
+        public async deleteAccount(userId: string) {
+                const response = await fetch("https://photostorageapi.azurewebsites.net/api/Users/" + userId, {
+                        method: 'DELETE'
+                })
+                if (!response.ok) {
+                        alert(response.statusText);
+                } else {
+                        this.forceUpdate();
+                }
         }
 
         public handleMenuOpen = () => {
