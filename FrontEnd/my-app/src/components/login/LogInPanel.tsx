@@ -45,6 +45,11 @@ const styles = (theme: Theme) =>
                         '&:hover': {
                                 backgroundColor: purple[700],
                         },
+                },
+                profileDiv: {
+                        backgroundColor: purple[200],
+                        textAlign: 'center',
+                        display: 'in-line'
                 }
         });
 
@@ -139,7 +144,7 @@ class LogInPanel extends React.Component<WithStyles<typeof styles>, ILogInState>
 
         public makeSideBar = () => {
                 return (
-                        <div>
+                        <div className={this.props.classes.profileDiv}>
                                 <IconButton
                                 style={{maxWidth: '100px', maxHeight: '100px', minWidth: '100px', minHeight: '100px'}}
                                  onClick={this.handleMenuOpen}>

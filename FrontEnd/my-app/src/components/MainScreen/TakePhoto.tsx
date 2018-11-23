@@ -4,18 +4,19 @@ import Button from '@material-ui/core/Button'
 import createStyles from '@material-ui/core/styles/createStyles';
 import * as Webcam from "react-webcam";
 import withRoot from './WithRoot';
-import { Theme, DialogContent, Dialog, WithStyles, withStyles } from '../../../node_modules/@material-ui/core';
+import { Theme, DialogContent, Dialog, WithStyles, withStyles, Icon } from '../../../node_modules/@material-ui/core';
+import PhotoCamera from '@material-ui/icons/PhotoCamera';
 
 const styles = (theme: Theme) =>
-  createStyles({
-    dialogContent: {
-      height: '100%',
-      flexWrap: 'wrap',
-      width: '100%'
-    },
-  });
+    createStyles({
+        dialogContent: {
+            height: '100%',
+            flexWrap: 'wrap',
+            width: '100%'
+        },
+    });
 
-interface IState{
+interface IState {
     open: boolean,
     refCamera: any
 }
@@ -35,10 +36,16 @@ class TakePhoto extends React.Component<IProps, IState> {
     public render() {
         return (
             <div>
-                <Button onClick={this.handleCameraOpen}>Take photo</Button>
-                <this.makeCameraDialog/>
+                <Button 
+                variant="raised"
+                onClick={this.handleCameraOpen}>
+                    Camera
+                    <Icon>
+                        <PhotoCamera />
+                    </Icon>
+                </Button>
+                <this.makeCameraDialog />
             </div>
-
         );
     }
 

@@ -50,6 +50,11 @@ const styles = (theme: Theme) =>
       fontSize: 20,
       paddingLeft: 15,
       paddingTop: 15
+    },
+    description: {
+      wordWrap: 'break-word',
+      flexWrap: 'wrap',
+      fontSize: '20'
     }
   });
 
@@ -93,7 +98,7 @@ class Index extends React.Component<IProps, IState> {
 
   public render() {
     return (
-      <div className={this.props.classes.root} style={{ textAlign: 'center' }}>
+      <div className={this.props.classes.root} >
         <AddDialog username={this.props.username} storeInfo={this.storeInfo} />
         <GridList cellHeight={350} cols={5} className={this.props.classes.gridList}>
           {this.state.data.map((photo: any) => (
@@ -140,7 +145,10 @@ class Index extends React.Component<IProps, IState> {
           }
           <DialogContent className={this.state.selectedPhoto.photoTitle} >
             {!this.state.editing ?
-              <DialogContentText noWrap={false}>{this.state.selectedPhoto.photoDescription} </DialogContentText>
+              <DialogContentText
+                className={this.props.classes.description}>
+                {this.state.selectedPhoto.photoDescription}
+              </DialogContentText>
               :
               <InputBase
                 multiline={true}

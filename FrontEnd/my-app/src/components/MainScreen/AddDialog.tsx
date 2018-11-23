@@ -1,11 +1,11 @@
 import * as React from 'react';
-import { Dialog, DialogContent, Button, DialogTitle, DialogActions, Input, IconButton } from '../../../node_modules/@material-ui/core';
+import { Dialog, DialogContent, Button, DialogTitle, DialogActions, Input, IconButton, Typography, Icon } from '../../../node_modules/@material-ui/core';
 import TextField from '@material-ui/core/TextField'
 import TakePhoto from './TakePhoto'
-import FileCopy from '@material-ui/icons/FileCopy'
-import ExitToApp from '@material-ui/icons/ExitToApp'
-import Loading from '../Loading';
-
+import Publish from '@material-ui/icons/Publish'
+import Close from '@material-ui/icons/Close'
+import Loading from '../Loading'
+import Add from '@material-ui/icons/Add'
 
 interface IProps {
     username: any,
@@ -45,7 +45,7 @@ class AddDialog extends React.Component<IProps, IState> {
     public render() {
         return (
             <div>
-                <Button onClick={this.handleOnCreate}>Add</Button>
+                <Button onClick={this.handleOnCreate}>Add a new image<Icon><Add/></Icon></Button>
                 <this.makeAddDialog />
                 <Loading loaded={this.state.loading} />
             </div>
@@ -73,6 +73,7 @@ class AddDialog extends React.Component<IProps, IState> {
                             id="outlined-password-input"
                             margin="dense"
                             label="Description"
+                            variant="outlined"
                             multiline={true}
                             rows={4}
                             rowsMax={4}
@@ -82,16 +83,20 @@ class AddDialog extends React.Component<IProps, IState> {
                         />
                         {this.state.uploadFileList !== null || this.state.imageFile !== null ?
                             <div>
-                                <IconButton onClick={this.handleRemoveSelected}><ExitToApp /></IconButton>
-                                <h1>placeholdeer</h1>
+                                <IconButton onClick={this.handleRemoveSelected}><Close /></IconButton>
+                                <Typography variant="h5" >An image has been uploaded.</Typography>
                             </div>
                             :
-                            <div>
-                                <Input type="file" onChange={this.handleFileUpload} id="raised-button-file" className="form-control-file" style={{ display: 'none' }} />
-                                <label htmlFor="raised-button-file">
-                                    <IconButton component="span"><FileCopy /></IconButton>
-                                </label>
-                                <TakePhoto handleFileUpload={this.convertBase64ToFile} />
+                            <div style={{display: 'table', textAlign: 'center' ,paddingTop:'20px'}}>
+                                <div style={{ display: 'table-cell' , paddingRight: '20px'}} >
+                                    <Input type="file" onChange={this.handleFileUpload} id="raised-button-file" className="form-control-file" style={{ display: 'none' }} />
+                                    <label htmlFor="raised-button-file">
+                                        <Button variant="raised" component="span">Upload<Icon><Publish/></Icon></Button>
+                                    </label>
+                                </div>
+                                <div style={{ display: 'table-cell'}}  >
+                                    <TakePhoto handleFileUpload={this.convertBase64ToFile} />
+                                </div>
                             </div>
                         }
                     </DialogContent>
