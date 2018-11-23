@@ -16,6 +16,7 @@ import InputBase from '@material-ui/core/InputBase'
 import Check from '@material-ui/icons/Check'
 import Close from '@material-ui/icons/Close'
 import ShareButton from './ShareButton';
+import Loading from '../Loading';
 const styles = (theme: Theme) =>
   createStyles({
     root: {
@@ -63,7 +64,8 @@ interface IState {
   description: any,
   title: any,
   uploadFileList: any,
-  editing: boolean
+  editing: boolean,
+  loading: boolean
 };
 
 interface IProps extends WithStyles<typeof styles> {
@@ -83,7 +85,8 @@ class Index extends React.Component<IProps, IState> {
       description: "",
       title: "",
       uploadFileList: null,
-      editing: false
+      editing: false,
+      loading: false
     })
     this.storeInfo = this.storeInfo.bind(this);
 
@@ -110,6 +113,7 @@ class Index extends React.Component<IProps, IState> {
           ))}
         </GridList>
         <this.displayContent />
+        <Loading loaded={this.state.loading} />
       </div>
     );
   }
@@ -132,8 +136,8 @@ class Index extends React.Component<IProps, IState> {
             :
             <InputBase className={this.props.classes.dialogTitle}
               defaultValue={this.state.selectedPhoto.photoTitle}
-              onChange={this.handleTitleChange} 
-              autoFocus={true}/>
+              onChange={this.handleTitleChange}
+              autoFocus={true} />
           }
           <DialogContent className={this.state.selectedPhoto.photoTitle} >
             {!this.state.editing ?
@@ -149,12 +153,12 @@ class Index extends React.Component<IProps, IState> {
 
             <img src={this.state.selectedPhoto.photoUrl} height='100%' width='100%' />
             {!this.state.editing ?
-              <div style={{display: 'inline-block'}}>
+              <div style={{ display: 'inline-block' }}>
                 <IconButton onClick={this.enableEdit}><Edit /> </IconButton>
                 <IconButton onClick={this.handleDeleteClick}>
                   <Delete />
                 </IconButton>
-                <ShareButton photo={this.state.selectedPhoto}/>
+                <ShareButton photo={this.state.selectedPhoto} />
               </div>
               :
               <div>
@@ -208,11 +212,13 @@ class Index extends React.Component<IProps, IState> {
   };
 
   public async storeInfo() {
+    this.isLoading();
     const photoList = await fetch("https://photostorageapi.azurewebsites.net/api/Photos/" + this.props.username);
     const photoData = await photoList.json();
     this.setState({
       data: photoData
     })
+    this.hasLoaded();
   }
 
   public componentDidMount() {
@@ -256,7 +262,7 @@ class Index extends React.Component<IProps, IState> {
     })
 
   }
-  
+
   /**
    * This section is for editing the photos
    * NOTE: Cannot edit the image. Just the title and the description.
@@ -287,20 +293,20 @@ class Index extends React.Component<IProps, IState> {
       return;
     }
 
-    const response = await fetch("https://photostorageapi.azurewebsites.net//api/Photos/" + this.state.selectedPhoto.photoId, 
-    {
-      body: JSON.stringify({
-        "photoId": this.state.selectedPhoto.photoId,
-        "photoTitle": this.state.title,
-        "photoDescription": this.state.description,
-        "photoUrl": this.state.selectedPhoto.photoUrl,
-        "dateMade": this.state.selectedPhoto.dateMade,
-        "userRefId": this.state.selectedPhoto.userRefId
-      }),
-      headers: {'cache-control': 'no-cache','Content-Type': 'application/json'},
-      method: 'PUT'
-    })
-    
+    const response = await fetch("https://photostorageapi.azurewebsites.net//api/Photos/" + this.state.selectedPhoto.photoId,
+      {
+        body: JSON.stringify({
+          "photoId": this.state.selectedPhoto.photoId,
+          "photoTitle": this.state.title,
+          "photoDescription": this.state.description,
+          "photoUrl": this.state.selectedPhoto.photoUrl,
+          "dateMade": this.state.selectedPhoto.dateMade,
+          "userRefId": this.state.selectedPhoto.userRefId
+        }),
+        headers: { 'cache-control': 'no-cache', 'Content-Type': 'application/json' },
+        method: 'PUT'
+      })
+
     if (!response.ok) {
       alert(response.statusText)
     } else {
@@ -324,6 +330,20 @@ class Index extends React.Component<IProps, IState> {
     this.disableEdit();
     this.setState({
       photoClick: false
+    })
+  }
+
+  /**
+   * Determines if the loading symbol needs to be rendered.
+   */
+  public hasLoaded = () => {
+    this.setState({
+      loading: false
+    })
+  }
+  public isLoading = () => {
+    this.setState({
+      loading: true
     })
   }
 }

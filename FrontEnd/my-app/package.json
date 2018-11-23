@@ -8,12 +8,15 @@
     "@types/react-router-dom": "^4.3.1",
     "@types/react-share": "^2.1.1",
     "@types/react-webcam": "^0.3.1",
+    "@types/styled-components": "^4.1.1",
     "react": "^16.6.3",
     "react-dom": "^16.6.3",
     "react-router-dom": "^4.3.1",
     "react-scripts-ts": "3.1.0",
     "react-share": "^2.3.1",
-    "react-webcam": "^1.0.4"
+    "react-simple-chatbot": "^0.4.2",
+    "react-webcam": "^1.0.4",
+    "styled-components": "^4.1.1"
   },
   "scripts": {
     "start": "react-scripts-ts start",

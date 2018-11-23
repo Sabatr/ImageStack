@@ -16,6 +16,7 @@ import { Theme } from '../../../node_modules/@material-ui/core';
 import Create from './Create';
 import Forgot from './Forgot';
 import Loading from '../Loading';
+import CustomChatBot from '../MainScreen/CustomChatBot';
 
 interface ILogInState {
         correctLogin: boolean,
@@ -26,6 +27,7 @@ interface ILogInState {
         password: any,
         username: any,
         loading: boolean,
+        anyErrors : boolean
 }
 
 const styles = (theme: Theme) =>
@@ -54,7 +56,8 @@ class LogInPanel extends React.Component<WithStyles<typeof styles>, ILogInState>
                         profileOpen: false,
                         password: "",
                         username: "",
-                        loading: false
+                        loading: false,
+                        anyErrors: false
                 })
 
                 this.handleLogInClick = this.handleLogInClick.bind(this);
@@ -63,7 +66,7 @@ class LogInPanel extends React.Component<WithStyles<typeof styles>, ILogInState>
 
         public render() {
                 return (
-                        <div>   
+                        <div onClick={()=> {this.setState({anyErrors: false})}}>   
                                 {this.state.correctLogin ? <this.makePhotoScreen /> : <this.makeLogIn />}
                                 <Loading loaded={this.state.loading}/>
                         </div>
@@ -73,12 +76,14 @@ class LogInPanel extends React.Component<WithStyles<typeof styles>, ILogInState>
         public makeLogIn = () => {
                 return (
                         <div>
+                                <CustomChatBot/>
                                 <div style={{ alignItems: 'center', paddingTop: '15%', paddingBottom: '20px' }}
                                         className={this.props.classes.root}>
                                         <TextField
                                                 id="standard-search"
                                                 label="User Name"
                                                 onChange={this.handleUserChange}
+                                                error={this.state.anyErrors}
                                                 type="search"
                                         />
                                 </div>
@@ -88,6 +93,7 @@ class LogInPanel extends React.Component<WithStyles<typeof styles>, ILogInState>
                                                 label="Password"
                                                 type="password"
                                                 onChange={this.handlePasswordchange}
+                                                error={this.state.anyErrors}
                                                 autoComplete="current-password" />
                                 </div>
                                 <div>
@@ -246,18 +252,25 @@ class LogInPanel extends React.Component<WithStyles<typeof styles>, ILogInState>
                         })
                 if (!userDetails.ok || this.state.username === "") {
                         this.hasLoaded();
-                        alert("Incorrect user")
+                        this.setError();
                 } else {
                         const userData = await userDetails.json();
                         if (userData.password !== this.state.password) {
-                                alert("Incorrect password")
+                                this.setError();
                         } else {
                                 this.setState({
+                                        anyErrors: false,
                                         correctLogin: true
                                 })
                         }
                         this.hasLoaded();
                 }
+        }
+
+        public setError = () => {
+                this.setState({
+                        anyErrors: true
+                })
         }
 
         public hasLoaded = () => {

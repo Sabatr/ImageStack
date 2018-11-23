@@ -4,6 +4,7 @@ import TextField from '@material-ui/core/TextField'
 import TakePhoto from './TakePhoto'
 import FileCopy from '@material-ui/icons/FileCopy'
 import ExitToApp from '@material-ui/icons/ExitToApp'
+import Loading from '../Loading';
 
 
 interface IProps {
@@ -17,7 +18,8 @@ interface IState {
     description: any,
     uploadFileList: any
     imageFile: any,
-    typeOfButton: buttonClicked
+    typeOfButton: buttonClicked,
+    loading: boolean
 }
 
 enum buttonClicked {
@@ -34,7 +36,8 @@ class AddDialog extends React.Component<IProps, IState> {
             description: "",
             uploadFileList: null,
             imageFile: null,
-            typeOfButton: buttonClicked.none
+            typeOfButton: buttonClicked.none,
+            loading: false
         })
         this.handleFileUpload = this.handleFileUpload.bind(this);
     }
@@ -44,6 +47,7 @@ class AddDialog extends React.Component<IProps, IState> {
             <div>
                 <Button onClick={this.handleOnCreate}>Add</Button>
                 <this.makeAddDialog />
+                <Loading loaded={this.state.loading} />
             </div>
         )
     }
@@ -138,7 +142,7 @@ class AddDialog extends React.Component<IProps, IState> {
             typeOfButton: buttonClicked.upload
         })
     }
-    
+
     /**
      * Converts base64 string to file.
      * Credit: https://forums.meteor.com/t/base64-convert-back-to-file/34188
@@ -161,6 +165,7 @@ class AddDialog extends React.Component<IProps, IState> {
     };
 
     public handleAdd = () => {
+        this.isLoading();
         if (this.state.title === "" || this.state.uploadFileList === undefined) {
             alert("no image selected");
             return;
@@ -185,12 +190,27 @@ class AddDialog extends React.Component<IProps, IState> {
             method: 'POST'
         })
         if (response.ok) {
-            alert("Success!");
+            this.hasLoaded();
             this.props.storeInfo();
             this.forceUpdate();
         } else {
+            this.hasLoaded();
             alert(response.statusText);
         }
+    }
+
+    /**
+     * Determines if the loading symbol needs to be rendered.
+     */
+    public hasLoaded = () => {
+        this.setState({
+            loading: false
+        })
+    }
+    public isLoading = () => {
+        this.setState({
+            loading: true
+        })
     }
 }
 
