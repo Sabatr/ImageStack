@@ -5,7 +5,7 @@ import createStyles from '@material-ui/core/styles/createStyles';
 import * as Webcam from "react-webcam";
 import withRoot from './WithRoot';
 import { Theme, DialogContent, Dialog, WithStyles, withStyles, Icon } from '../../../node_modules/@material-ui/core';
-import PhotoCamera from '@material-ui/icons/PhotoCamera';
+import AddAPhoto from '@material-ui/icons/AddAPhoto';
 
 const styles = (theme: Theme) =>
     createStyles({
@@ -41,7 +41,7 @@ class TakePhoto extends React.Component<IProps, IState> {
                 onClick={this.handleCameraOpen}>
                     Camera
                     <Icon>
-                        <PhotoCamera />
+                        <AddAPhoto />
                     </Icon>
                 </Button>
                 <this.makeCameraDialog />

@@ -2,7 +2,7 @@ import * as React from 'react';
 import createStyles from '@material-ui/core/styles/createStyles';
 import withStyles, { WithStyles } from '@material-ui/core/styles/withStyles';
 import withRoot from './WithRoot';
-import { Theme, Dialog, DialogContent, Button, Paper, DialogTitle, DialogContentText, IconButton, DialogActions } from '../../../node_modules/@material-ui/core';
+import { Theme, Dialog, DialogContent, Button, Paper, DialogTitle, DialogContentText, IconButton, DialogActions, Tooltip } from '../../../node_modules/@material-ui/core';
 // import { withStyles, Theme } from '@material-ui/core/styles';
 import GridList from '@material-ui/core/GridList';
 import GridListTile from '@material-ui/core/GridListTile';
@@ -24,8 +24,10 @@ const styles = (theme: Theme) =>
       display: 'flex',
       flexWrap: 'wrap',
       justifyContent: 'space-around',
+      textAlign: 'center'
     },
     gridList: {
+      textAlign: 'center',
       width: '100%',
       height: '100%',
       '&:hover': {
@@ -39,16 +41,14 @@ const styles = (theme: Theme) =>
     icon: {
       color: grey[100],
       '&:hover': {
-        color: grey[0],
+        backgroundColor: 'rgba(255,255,255,0.5)',
       }
     },
     margin: {
-      margin: theme.spacing.unit,
     },
     dialogTitle: {
       margin: theme.spacing.unit,
       fontSize: 20,
-      paddingLeft: 15,
       paddingTop: 15
     },
     description: {
@@ -100,17 +100,20 @@ class Index extends React.Component<IProps, IState> {
     return (
       <div className={this.props.classes.root} >
         <AddDialog username={this.props.username} storeInfo={this.storeInfo} />
-        <GridList cellHeight={350} cols={5} className={this.props.classes.gridList}>
+        <GridList cellHeight={350} cols={4} className={this.props.classes.gridList} spacing={1}>
           {this.state.data.map((photo: any) => (
-            <GridListTile key={photo.photoId}>
+            <GridListTile key={photo.photoId} >
               <img src={photo.photoUrl} alt={photo.photoTitle} />
               <GridListTileBar
+                style={{ backgroundColor: "rgba(0,0,0,0.8)" }}
                 title={photo.photoTitle}
                 subtitle={<span>Made on: {photo.dateMade}</span>}
                 actionIcon={
-                  <IconButton onClick={this.handlePhotoClick.bind(this, photo)} className={this.props.classes.icon}>
-                    <Fullscreen className={this.props.classes.icon} />
-                  </IconButton>
+                  <Tooltip title="Expand" placement="top">
+                    <IconButton onClick={this.handlePhotoClick.bind(this, photo)} className={this.props.classes.icon}>
+                      <Fullscreen/>
+                    </IconButton>
+                  </Tooltip>
                 }
               />
             </GridListTile>

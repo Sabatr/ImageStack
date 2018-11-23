@@ -44,8 +44,9 @@ class AddDialog extends React.Component<IProps, IState> {
 
     public render() {
         return (
-            <div>
-                <Button onClick={this.handleOnCreate}>Add a new image<Icon><Add/></Icon></Button>
+            <div style={{paddingTop:'10px'}} >
+                <Button variant="raised" 
+                onClick={this.handleOnCreate}>Add new image<Icon><Add/></Icon></Button>
                 <this.makeAddDialog />
                 <Loading loaded={this.state.loading} />
             </div>

@@ -41,10 +41,10 @@ class ShareButton extends React.Component<IProps, IState> {
     }
     public render() {
         return (
-            <div>
-                <IconButton aria-owns={this.state.anchor ? 'simple-menu' : undefined} onClick={this.handleShareOpen}><Share /></IconButton>
+            <>
+                <IconButton id="anchor" onClick={this.handleShareOpen}><Share /></IconButton>
                 <this.createShareMenu />
-            </div>
+            </>
         );
     }
 
@@ -65,7 +65,7 @@ class ShareButton extends React.Component<IProps, IState> {
             <Menu
                 id="simple-menu"
                 className={this.props.classes.horizontal}
-                anchorEl={this.state.anchor}
+                anchorEl={document.getElementById("anchor")}
                 open={this.state.share}
                 onClose={this.handleShareclose}
             >

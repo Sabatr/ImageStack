@@ -11,7 +11,7 @@ import purple from '@material-ui/core/colors/purple'
 import ListItemText from '@material-ui/core/ListItemText';
 import MenuItem from '@material-ui/core/MenuItem';
 import PhotoScreen from '../MainScreen/PhotoScreen'
-import { Drawer, List, ListItem, IconButton } from '../../../node_modules/@material-ui/core';
+import { Drawer, List, ListItem, IconButton, Typography, Tooltip } from '../../../node_modules/@material-ui/core';
 import { Theme } from '../../../node_modules/@material-ui/core';
 import Create from './Create';
 import Forgot from './Forgot';
@@ -47,7 +47,6 @@ const styles = (theme: Theme) =>
                         },
                 },
                 profileDiv: {
-                        backgroundColor: purple[200],
                         textAlign: 'center',
                         display: 'in-line'
                 }
@@ -130,14 +129,15 @@ class LogInPanel extends React.Component<WithStyles<typeof styles>, ILogInState>
         public makePhotoScreen = () => {
                 return (
                         <div>
-                                <PhotoChatBot username={this.state.username} />
                                 <div className={this.props.classes.root}>
-                                        <h2 style={{ color: 'black' }}>Your Photos </h2>
                                         <this.makeSideBar />
                                 </div>
+                                <PhotoChatBot username={this.state.username} />
                                 <div>
                                         <PhotoScreen username={this.state.username} />
                                 </div>
+
+
                         </div>
                 );
         }
@@ -145,17 +145,17 @@ class LogInPanel extends React.Component<WithStyles<typeof styles>, ILogInState>
         public makeSideBar = () => {
                 return (
                         <div className={this.props.classes.profileDiv}>
-                                <IconButton
-                                style={{maxWidth: '100px', maxHeight: '100px', minWidth: '100px', minHeight: '100px'}}
-                                 onClick={this.handleMenuOpen}>
-                                 <AccountBox style={{maxWidth: '75px', maxHeight: '75px', minWidth: '75px', minHeight: '75px'}}/>
-                                 </IconButton>
+                                <Typography variant="h2">THIS IS THE TITLE</Typography>
+                                <Tooltip title="Profile">
+                                        <IconButton
+                                                style={{ maxWidth: '100px', maxHeight: '100px', minWidth: '100px', minHeight: '100px' }}
+                                                onClick={this.handleMenuOpen}>
+                                                <AccountBox style={{ maxWidth: '75px', maxHeight: '75px', minWidth: '75px', minHeight: '75px' }} />
+                                        </IconButton>
+                                </Tooltip>
                                 <Drawer anchor="right" open={this.state.open} onClose={this.handleMenuClose}>
                                         <MenuItem onClick={this.handleProfileClick}>
                                                 <ListItemText primary="Profile" />
-                                        </MenuItem>
-                                        <MenuItem>
-                                                <ListItemText primary="About" />
                                         </MenuItem>
                                         <MenuItem onClick={this.handleLogOut}>
                                                 <ListItemText primary="Log out" />
