@@ -89,7 +89,6 @@ class Index extends React.Component<IProps, IState> {
       loading: false
     })
     this.storeInfo = this.storeInfo.bind(this);
-
   }
 
   public render() {
@@ -141,7 +140,7 @@ class Index extends React.Component<IProps, IState> {
           }
           <DialogContent className={this.state.selectedPhoto.photoTitle} >
             {!this.state.editing ?
-              <DialogContentText>{this.state.selectedPhoto.photoDescription} </DialogContentText>
+              <DialogContentText noWrap={false}>{this.state.selectedPhoto.photoDescription} </DialogContentText>
               :
               <InputBase
                 multiline={true}

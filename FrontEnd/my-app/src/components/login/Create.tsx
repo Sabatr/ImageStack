@@ -37,7 +37,7 @@ class Create extends React.Component<{}, ICreate> {
         <Button onClick={this.handleOnCreate}>Create Account</Button>
         <this.makeCreate />
         <Loading loaded={this.state.loading} />
-        <SuccessDialog isOpen={this.state.success} setSuccessful={this.setSuccess}/>
+        <SuccessDialog message="Log in successful!" isOpen={this.state.success} setSuccessful={this.setSuccess}/>
       </div>
     );
   }

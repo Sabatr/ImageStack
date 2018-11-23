@@ -1,7 +1,7 @@
 import * as React from 'react';
 import createStyles from '@material-ui/core/styles/createStyles';
 import withStyles, { WithStyles } from '@material-ui/core/styles/withStyles';
-import { Theme, Dialog, Typography, DialogTitle } from '../../../node_modules/@material-ui/core';
+import { Theme, Dialog, Typography, DialogTitle, DialogContent } from '../../../node_modules/@material-ui/core';
 import withRoot from '../MainScreen/WithRoot';
 // import { withStyles, Theme } from '@material-ui/core/styles';
 
@@ -10,6 +10,7 @@ interface IState {
 }
 
 interface IProps extends WithStyles<typeof styles> {
+    message: any,
     isOpen: any
     setSuccessful: (isSuccessful:boolean) => void
 }
@@ -29,6 +30,7 @@ class SuccessDialog extends React.Component<IProps,IState> {
         return (
             <Dialog open={this.props.isOpen} onClose={()=>this.props.setSuccessful(false)}>
             <DialogTitle><Typography variant="h2">Success!</Typography></DialogTitle>
+            <DialogContent>{this.props.message}</DialogContent>
             </Dialog>
         );
     }

@@ -11,13 +11,15 @@ import purple from '@material-ui/core/colors/purple'
 import ListItemText from '@material-ui/core/ListItemText';
 import MenuItem from '@material-ui/core/MenuItem';
 import PhotoScreen from '../MainScreen/PhotoScreen'
-import { Drawer, List, ListItem } from '../../../node_modules/@material-ui/core';
+import { Drawer, List, ListItem, IconButton } from '../../../node_modules/@material-ui/core';
 import { Theme } from '../../../node_modules/@material-ui/core';
 import Create from './Create';
 import Forgot from './Forgot';
 import Loading from '../Loading';
 import CustomChatBot from '../MainScreen/CustomChatBot';
 import PhotoChatBot from '../MainScreen/PhotoChatBot';
+import ChangePasswordDialog from '../MainScreen/ChangePasswordDialog';
+import AccountBox from '@material-ui/icons/AccountBox'
 
 interface ILogInState {
         correctLogin: boolean,
@@ -28,7 +30,8 @@ interface ILogInState {
         password: any,
         username: any,
         loading: boolean,
-        anyErrors : boolean
+        anyErrors: boolean,
+        editPassword: boolean
 }
 
 const styles = (theme: Theme) =>
@@ -58,7 +61,8 @@ class LogInPanel extends React.Component<WithStyles<typeof styles>, ILogInState>
                         password: "",
                         username: "",
                         loading: false,
-                        anyErrors: false
+                        anyErrors: false,
+                        editPassword: false
                 })
 
                 this.handleLogInClick = this.handleLogInClick.bind(this);
@@ -67,14 +71,14 @@ class LogInPanel extends React.Component<WithStyles<typeof styles>, ILogInState>
 
         public render() {
                 return (
-                        <div onClick={()=> {this.setState({anyErrors: false})}}>   
+                        <div onClick={() => { this.setState({ anyErrors: false }) }}>
                                 {this.state.correctLogin ? <this.makePhotoScreen /> : <this.makeLogIn />}
-                                <Loading loaded={this.state.loading}/>
+                                <Loading loaded={this.state.loading} />
                         </div>
                 );
         }
 
-        public setLogIn =() => {
+        public setLogIn = () => {
                 this.setState({
                         correctLogin: true
                 })
@@ -82,7 +86,7 @@ class LogInPanel extends React.Component<WithStyles<typeof styles>, ILogInState>
         public makeLogIn = () => {
                 return (
                         <div>
-                                <CustomChatBot logIn={this.setLogIn} setGuest={this.setUserNameAndPass}/>
+                                <CustomChatBot logIn={this.setLogIn} setGuest={this.setUserNameAndPass} />
                                 <div style={{ alignItems: 'center', paddingTop: '15%', paddingBottom: '20px' }}
                                         className={this.props.classes.root}>
                                         <TextField
@@ -121,7 +125,7 @@ class LogInPanel extends React.Component<WithStyles<typeof styles>, ILogInState>
         public makePhotoScreen = () => {
                 return (
                         <div>
-                                <PhotoChatBot username={this.state.username}/>
+                                <PhotoChatBot username={this.state.username} />
                                 <div className={this.props.classes.root}>
                                         <h2 style={{ color: 'black' }}>Your Photos </h2>
                                         <this.makeSideBar />
@@ -136,7 +140,11 @@ class LogInPanel extends React.Component<WithStyles<typeof styles>, ILogInState>
         public makeSideBar = () => {
                 return (
                         <div>
-                                <Button onClick={this.handleMenuOpen}>Click me</Button>
+                                <IconButton
+                                style={{maxWidth: '100px', maxHeight: '100px', minWidth: '100px', minHeight: '100px'}}
+                                 onClick={this.handleMenuOpen}>
+                                 <AccountBox style={{maxWidth: '75px', maxHeight: '75px', minWidth: '75px', minHeight: '75px'}}/>
+                                 </IconButton>
                                 <Drawer anchor="right" open={this.state.open} onClose={this.handleMenuClose}>
                                         <MenuItem onClick={this.handleProfileClick}>
                                                 <ListItemText primary="Profile" />
@@ -157,24 +165,34 @@ class LogInPanel extends React.Component<WithStyles<typeof styles>, ILogInState>
                         <Dialog
                                 open={this.state.profileOpen}
                                 onClose={this.handleProfileExit}>
-                                <DialogTitle id="form-dialog-title">Profile Information</DialogTitle>
+                                <DialogTitle id="form-dialog-title">{this.state.username}'s profile</DialogTitle>
                                 <DialogContent>
                                         <div style={{ alignSelf: "left", alignItems: "left" }}>
                                                 <List component="nav">
-                                                        <ListItem button={true}>
-                                                                <ListItemText primary="Profile" />
+                                                        <ListItem button={true}
+                                                                onClick={() => this.handleChangePassword(true)}
+                                                                style={{ textAlign: 'left' }}>
+                                                                <ListItemText primary="Change password" />
                                                         </ListItem>
-                                                        <ListItem button={true} onClick={this.handleDeleteButton}>
+                                                        <ListItem button={true}
+                                                                onClick={this.handleDeleteButton}
+                                                                style={{ textAlign: 'left' }}>
                                                                 <ListItemText primary="Delete Account" />
                                                         </ListItem>
                                                 </List>
                                         </div>
-                                        <div>
-                                                <h2> placeholder text </h2>
-                                        </div>
+                                        <ChangePasswordDialog username={this.state.username}
+                                                open={this.state.editPassword}
+                                                onClose={this.handleChangePassword} />
                                 </DialogContent>
                         </Dialog>
                 );
+        }
+
+        public handleChangePassword = (value: any) => {
+                this.setState({
+                        editPassword: value
+                })
         }
 
         public handleDeleteButton = () => {
@@ -295,7 +313,7 @@ class LogInPanel extends React.Component<WithStyles<typeof styles>, ILogInState>
 
         public isLoading = () => {
                 this.setState({
-                        loading:true
+                        loading: true
                 })
         }
 
