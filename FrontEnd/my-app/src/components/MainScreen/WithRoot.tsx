@@ -1,6 +1,6 @@
 import * as React from 'react';
 import { MuiThemeProvider, createMuiTheme } from '@material-ui/core/styles';
-import green from '@material-ui/core/colors/green';
+import cyan from '@material-ui/core/colors/cyan';
 import deepPurple from '@material-ui/core/colors/deepPurple';
 import CssBaseline from '@material-ui/core/CssBaseline';
 
@@ -9,7 +9,7 @@ import CssBaseline from '@material-ui/core/CssBaseline';
 const theme = createMuiTheme({
   palette: {
     primary: deepPurple,
-    secondary: green,
+    secondary: cyan,
   },
   typography: {
     useNextVariants: true,

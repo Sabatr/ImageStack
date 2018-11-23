@@ -165,16 +165,16 @@ class Index extends React.Component<IProps, IState> {
             <img src={this.state.selectedPhoto.photoUrl} height='100%' width='100%' />
             {!this.state.editing ?
               <div style={{ display: 'inline-block' }}>
-                <IconButton onClick={this.enableEdit}><Edit /> </IconButton>
-                <IconButton onClick={this.handleDeleteClick}>
+                <Tooltip title="Edit"><IconButton onClick={this.enableEdit}><Edit /> </IconButton></Tooltip>
+                <Tooltip title="Delete"><IconButton onClick={this.handleDeleteClick}>
                   <Delete />
-                </IconButton>
-                <ShareButton photo={this.state.selectedPhoto} />
+                </IconButton></Tooltip>
+                <Tooltip title="Share"><ShareButton photo={this.state.selectedPhoto} /></Tooltip>
               </div>
               :
               <div>
-                <IconButton onClick={this.confirmEdit}><Check /></IconButton>
-                <IconButton onClick={this.disableEdit}><Close /></IconButton>
+                <Tooltip title="Confirm edit"><IconButton onClick={this.confirmEdit}><Check /></IconButton></Tooltip>
+                <Tooltip title="Cancel edit"><IconButton onClick={this.disableEdit}><Close /></IconButton></Tooltip>
               </div>
             }
             <this.confirmDelete />
@@ -198,10 +198,10 @@ class Index extends React.Component<IProps, IState> {
         </DialogContent>
         <DialogActions>
           <DialogActions>
-            <Button onClick={this.handleDeleteConfirm} color="primary">
+            <Button variant="outlined" onClick={this.handleDeleteConfirm} color="primary">
               Yes
           </Button>
-            <Button onClick={this.handleDeleteClose} color="primary">
+            <Button variant="outlined" onClick={this.handleDeleteClose} color="primary">
               No
           </Button>
           </DialogActions>

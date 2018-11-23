@@ -37,7 +37,7 @@ class Create extends React.Component<{}, ICreate> {
         <Button variant="outlined" style={{width: '200px'}} onClick={this.handleOnCreate}>Create Account</Button>
         <this.makeCreate />
         <Loading loaded={this.state.loading} />
-        <SuccessDialog message="Log in successful!" isOpen={this.state.success} setSuccessful={this.setSuccess}/>
+        <SuccessDialog message="Account created successfully!" isOpen={this.state.success} setSuccessful={this.setSuccess}/>
       </>
     );
   }
@@ -109,10 +109,10 @@ class Create extends React.Component<{}, ICreate> {
 
           </DialogContent>
           <DialogActions>
-            <Button color="primary" onClick={this.handleOnCreateClose}>
+            <Button variant="outlined" color="primary" onClick={this.handleOnCreateClose}>
               Cancel
                   </Button>
-            <Button color="primary" onClick={this.handleCreateConfirm}>
+            <Button variant="outlined" color="primary" onClick={this.handleCreateConfirm}>
               Create
                   </Button>
           </DialogActions>

@@ -45,10 +45,10 @@ class Forgot extends React.Component<{},IForgot> {
                     />
                     </DialogContent>
                     <DialogActions>
-                            <Button color="primary" onClick={this.handleForgotPasswordClose}>
+                            <Button variant="outlined" color="primary" onClick={this.handleForgotPasswordClose}>
                                     Cancel
                             </Button>
-                            <Button color="primary" onClick={this.handleForgotConfirm}>
+                            <Button variant="outlined" color="primary" onClick={this.handleForgotConfirm}>
                                     Confirm
                             </Button>
                             </DialogActions>

@@ -38,36 +38,80 @@ class PhotoChatBot extends React.Component<IProps, IState> {
                     {
                         id: '2',
                         options: [
-                            { value: 1, label: 'Yes', trigger: '3' },
+                            { value: 1, label: 'Photos', trigger: '3' },
+                            { value: 2, label: 'Profile', trigger: '4' },
                         ],
                     },
                     {
                         id: '3',
-                        message: 'What would you like help with?',
-                        trigger: 'ChooseHelp',
+                        message: 'What about would you like to know about Photos?',
+                        trigger: '5',
                     },
                     {
-                        id: 'ChooseHelp',
+                        id: '5',
                         options: [
-                            { value: 1, label: 'Log In', trigger: 'LogIn' },
-                            { value: 2, label: 'Create an account', trigger: 'CreateAccount' },
-                            { value: 3, label: 'Forgot password', trigger: 'ForgotPassword' },
+                            { value: 1, label: 'Adding a photo', trigger: '6' },
+                            { value: 2, label: 'Editing a photo', trigger: '7' },
                         ],
                     },
                     {
-                        id: 'LogIn',
-                        message: 'To log in..',
-                        trigger: 'ChooseHelp'
+                        id: '6',
+                        message: 'What would you like to know about adding a photo?',
+                        trigger: 'addingOptions',
                     },
                     {
-                        id: 'CreateAccount',
-                        message: 'To create an account',
-                        trigger: 'ChooseHelp'
+                        id: 'addingOptions',
+                        options: [
+                            { value: 1, label: 'General', trigger: 'General' },
+                            { value: 2, label: 'Upload', trigger: 'Upload' },
+                            { value: 2, label: 'Camera', trigger: 'Camera' },
+                        ],
                     },
                     {
-                        id: 'ForgotPassword',
-                        message: 'To retrieve your password..',
-                        trigger: 'ChooseHelp'
+                        id: 'General',
+                        message: 'To add a new photo, simply select the add a photo button. Make sure you have a title.'+
+                         'Descriptios are optional. Please select one of the photo options before uploading!',
+                        trigger: '1',
+                    },
+                    {
+                        id: 'Upload',
+                        message: 'Files only take in image files. For example, .png and .jpeg. Please do not try to upload other types.',
+                        trigger: '1',
+                    },
+                    {
+                        id: 'Camera',
+                        message: 'Simply press Take Screenshot to take a photo from the webcam. This will automatically be added.',
+                        trigger: '1',
+                    },
+                    {
+                        id: '7',
+                        message: 'You can simply press any of the buttons to perform actions. Hover over them to determine what they are.'+
+                        '\nTo edit: Select edit and confirm after you make any changes.\nTo delete: press delete and confirm.',
+                        trigger: '1',
+                    },
+                    {
+                        id: '4',
+                        message: 'What would you like to know about profiles?',
+                        trigger: 'profileOptions'
+                    },
+                    {
+                        id: 'profileOptions',
+                        options: [
+                            { value: 1, label: 'Edit profile information', trigger: '8' },
+                            { value: 2, label: 'Delete Account', trigger: '9' },
+                        ],
+                    },
+
+                    {
+                        id: '8',
+                        message: 'Currently, you can only change your password. To do so, press the button in the middle and press profile.'+
+                        '\nA changed password should be there.',
+                        trigger: '1'
+                    },
+                    {
+                        id: '9',
+                        message: 'WARNING: Deleting your account will delete all photos correlated to that account. Be warned!',
+                        trigger: '1'
                     },
                 ]}
             />

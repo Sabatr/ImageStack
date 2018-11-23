@@ -57,7 +57,7 @@ class CustomChatBot extends React.Component<IProps, IState> {
                     },
                     {
                         id: 'LogIn',
-                        message: 'You must have an existing account to log in. Woud you like to log in to a pubilc account?',
+                        message: 'You must have an existing account to log in. Woud you like to log in to a pubilc account?\n',
                         trigger: 'ChooseLogIn'
                     },
                     {
@@ -69,12 +69,13 @@ class CustomChatBot extends React.Component<IProps, IState> {
                     },
                     {
                         id: 'CreateAccount',
-                        message: 'To create an account',
+                        message: 'To create an account, click the create account button. You must be enter a valid username and'+
+                        ' password.',
                         trigger: 'ChooseHelp'
                     },
                     {
                         id: 'ForgotPassword',
-                        message: 'To retrieve your password..',
+                        message: 'DOES NOT WORK. To be implemented in the future.',
                         trigger: 'ChooseHelp'
                     },
                 ]}

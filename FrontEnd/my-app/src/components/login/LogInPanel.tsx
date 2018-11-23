@@ -179,12 +179,12 @@ class LogInPanel extends React.Component<WithStyles<typeof styles>, ILogInState>
                                                 }} />
                                         </IconButton>
                                 </Tooltip>
-                                <Drawer anchor="right" open={this.state.open} onClose={this.handleMenuClose}>
-                                        <MenuItem onClick={this.handleProfileClick}>
-                                                <ListItemText primary="Profile" />
+                                <Drawer anchor="right" open={this.state.open} onClose={this.handleMenuClose} style={{width:"100px"}}>
+                                        <MenuItem onClick={this.handleProfileClick} style={{width:"200px",fontSize: "30px"}}>
+                                                <ListItemText primary="Profile" style={{fontSize: "30px"}}/>
                                         </MenuItem>
-                                        <MenuItem onClick={this.handleLogOut}>
-                                                <ListItemText primary="Log out" />
+                                        <MenuItem onClick={this.handleLogOut} style={{width:"200px",fontSize: "30px"}}>
+                                                <ListItemText primary="Log out" style={{fontSize: "30px"}}/>
                                         </MenuItem>
                                 </Drawer>
                                 <this.createProfileMenu />

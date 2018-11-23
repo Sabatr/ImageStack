@@ -71,7 +71,7 @@ class TakePhoto extends React.Component<IProps, IState> {
                         ref={this.state.refCamera}
                         width={550}
                     />
-                    <Button onClick={this.takeScreenShot}>Get screenshot</Button>
+                    <Button variant="outlined" color="primary" onClick={this.takeScreenShot}>Get screenshot</Button>
                 </DialogContent>
             </Dialog>
         )

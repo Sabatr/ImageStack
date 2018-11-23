@@ -1,5 +1,5 @@
 import * as React from 'react';
-import { Dialog, DialogContent, Button, DialogTitle, DialogActions, Input, IconButton, Typography, Icon } from '../../../node_modules/@material-ui/core';
+import { Dialog, DialogContent, Button, DialogTitle, DialogActions, Input, Icon, Tooltip } from '../../../node_modules/@material-ui/core';
 import TextField from '@material-ui/core/TextField'
 import TakePhoto from './TakePhoto'
 import Publish from '@material-ui/icons/Publish'
@@ -47,7 +47,7 @@ class AddDialog extends React.Component<IProps, IState> {
             <div style={{paddingTop:'10px'}} >
                 <Button variant="raised" 
                 color="primary"
-                onClick={this.handleOnCreate}>Add new image<Icon><Add/></Icon></Button>
+                onClick={this.handleOnCreate}>Add a photo<Icon><Add/></Icon></Button>
                 <this.makeAddDialog />
                 <Loading loaded={this.state.loading} />
             </div>
@@ -85,8 +85,12 @@ class AddDialog extends React.Component<IProps, IState> {
                         />
                         {this.state.uploadFileList !== null || this.state.imageFile !== null ?
                             <div>
-                                <IconButton onClick={this.handleRemoveSelected}><Close /></IconButton>
-                                <Typography variant="h5" >An image has been uploaded.</Typography>
+                                <Tooltip title="Remove">
+                                <Button variant="outlined" onClick={this.handleRemoveSelected}>
+                                Click to remove image.
+                                <Icon><Close style={{color:"red"}}/>
+                                </Icon></Button>
+                                </Tooltip>
                             </div>
                             :
                             <div style={{display: 'table', textAlign: 'center' ,paddingTop:'20px'}}>
@@ -103,10 +107,10 @@ class AddDialog extends React.Component<IProps, IState> {
                         }
                     </DialogContent>
                     <DialogActions>
-                        <Button color="primary" onClick={this.handleOnCreateClose}>
+                        <Button variant="outlined" color="primary" onClick={this.handleOnCreateClose}>
                             Cancel
                       </Button>
-                        <Button color="primary" onClick={this.handleAdd}>
+                        <Button variant="outlined" color="primary" onClick={this.handleAdd}>
                             Add
                 </Button>
                     </DialogActions>
@@ -117,6 +121,8 @@ class AddDialog extends React.Component<IProps, IState> {
 
     public handleRemoveSelected = () => {
         this.setState({
+            title: "",
+            description: "",
             uploadFileList: null,
             imageFile: null
         })
@@ -176,6 +182,7 @@ class AddDialog extends React.Component<IProps, IState> {
         this.isLoading();
         if (this.state.title === "" || this.state.uploadFileList === undefined) {
             alert("no image selected");
+            this.handleOnCreateClose();
             return;
         }
         let imageFile;

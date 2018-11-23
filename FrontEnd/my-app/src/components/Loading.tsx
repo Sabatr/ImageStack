@@ -1,20 +1,43 @@
 import * as React from 'react'
-import { Dialog, CircularProgress, DialogContent } from '../../node_modules/@material-ui/core';
+import { Dialog, CircularProgress, DialogContent, WithStyles, Theme, createStyles, withStyles } from '../../node_modules/@material-ui/core';
+import withRoot from './MainScreen/WithRoot';
 
-interface IProps {
+interface IProps extends WithStyles<typeof styles> {
     loaded: any
 }
 
-class Loading extends React.Component<IProps,{}> {
+const styles = (theme: Theme) =>
+    createStyles({
+        root: {
+            backgroundColor: "transparent"
+        },
+
+        paper: {
+            backgroundColor: "transparent",
+            boxShadow: "none",
+            overflow: "hidden"
+        },
+
+    })
+
+
+class Loading extends React.Component<IProps, {}> {
     public render() {
         return (
-            <Dialog open={this.props.loaded}>
+            <Dialog open={this.props.loaded}
+            scroll="paper"
+                PaperProps={{
+                    classes: {
+                        root: this.props.classes.paper
+                    }
+                }}
+            >
                 <DialogContent>
-                    <CircularProgress />
+                    <CircularProgress color="secondary" size={100} thickness={4} />
                 </DialogContent>
             </Dialog>
         )
     }
 }
 
-export default Loading
+export default withRoot(withStyles(styles)(Loading));
