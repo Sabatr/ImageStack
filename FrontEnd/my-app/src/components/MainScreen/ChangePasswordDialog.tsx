@@ -13,6 +13,12 @@ interface IState {
     newPassword: any,
     open: boolean
 }
+
+/**
+ * Creates the component to change passwords.
+ * 
+ * @author Brian Nguyen
+ */
 class ChangePasswordDialog extends React.Component<IProps, IState> {
     constructor(props: any) {
         super(props);
@@ -23,26 +29,47 @@ class ChangePasswordDialog extends React.Component<IProps, IState> {
         })
     }
 
+    /**
+     * Keeps track of the text field changes
+     */
     public handleNewPasswordChange = (event: any) => {
         this.setState({
             newPassword: event.target.value
         })
     }
-
     public handleOldPasswordChange = (event: any) => {
         this.setState({
             oldPassword: event.target.value
         })
     }
 
+    /**
+     * Invokes the parent onClose() method
+     */
     public handleDialogClose = (state: any) => {
         this.props.onClose(state);
     }
 
+    /**
+     * A handler for the change button
+     */
     public confirmPassword = () => {
         this.changePassword();
     }
 
+    /**
+     * If successfully changed, a pop up message is called.
+     */
+    public setSuccessful = (state: any) => {
+        this.setState({
+            open: state
+        })
+        this.handleDialogClose(state);
+    }
+
+    /**
+     * Uses GET and PUT requests to change the password.
+     */
     public async changePassword() {
         // When logged in, we can alwyas garuantee that the username exists.
         const userDetails = await fetch("https://photostorageapi.azurewebsites.net/api/Users/" + this.props.username,
@@ -54,7 +81,6 @@ class ChangePasswordDialog extends React.Component<IProps, IState> {
             alert("Password does not match with old password!");
             return;
         }
-
         const editingPassword = await fetch("https://photostorageapi.azurewebsites.net/api/Users/" + this.props.username,
             {
                 body: JSON.stringify({
@@ -71,31 +97,39 @@ class ChangePasswordDialog extends React.Component<IProps, IState> {
             this.setSuccessful(true);
         } else {
             alert("Something went wrong!");
-            console.log(editingPassword.statusText)
         }
-    }
-
-    public setSuccessful = (state: any) => {
-        this.setState({
-            open: state
-        })
-        this.handleDialogClose(state);
     }
 
     public render() {
         return (
-            <Dialog open={this.props.open} onClose={()=>this.handleDialogClose(false)} >
-                <DialogTitle>Change Password</DialogTitle>
+            <Dialog 
+            open={this.props.open} 
+            onClose={()=>this.handleDialogClose(false)} >
+                <DialogTitle>
+                    Change Password
+                </DialogTitle>
                 <DialogContent>
                     <TextField
                         type="password"
                         fullWidth={true}
                         onChange={this.handleOldPasswordChange}
-                        label="Current Password" />
-                    <TextField type="password" fullWidth={true} onChange={this.handleNewPasswordChange} label="New Password" />
+                        label="Current Password" 
+                    />
+                    <TextField 
+                    type="password" 
+                    fullWidth={true} 
+                    onChange={this.handleNewPasswordChange} 
+                    label="New Password" 
+                    />
                     <DialogActions>
-                        <Button onClick={()=>this.handleDialogClose(false)}>Cancel</Button>
-                        <Button onClick={this.confirmPassword}>Confirm</Button>
+                        <Button 
+                        onClick={()=>this.handleDialogClose(false)}>
+                            Cancel
+                        </Button>
+                        <Button 
+                        onClick={this.confirmPassword}>
+                            Confirm
+                        </Button>
                     </DialogActions>
                 </DialogContent>
                 <SuccessDialog

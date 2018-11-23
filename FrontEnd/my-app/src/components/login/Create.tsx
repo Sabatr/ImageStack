@@ -18,6 +18,11 @@ interface ICreate {
   loading: boolean
 }
 
+/**
+ * This class handles all of the create account needs.
+ * 
+ * @author Brian Nguyen
+ */
 class Create extends React.Component<{}, ICreate> {
   constructor(props: any) {
     super(props);
@@ -31,17 +36,10 @@ class Create extends React.Component<{}, ICreate> {
       success: false
     })
   }
-  public render() {
-    return (
-      <>
-        <Button variant="outlined" style={{width: '200px'}} onClick={this.handleOnCreate}>Create Account</Button>
-        <this.makeCreate />
-        <Loading loaded={this.state.loading} />
-        <SuccessDialog message="Account created successfully!" isOpen={this.state.success} setSuccessful={this.setSuccess}/>
-      </>
-    );
-  }
 
+  /**
+   * Listens for the change in the text fields.
+   */
   public handleUserNameChange = (event: any) => {
     this.setState({
       username: event.target.value
@@ -63,6 +61,96 @@ class Create extends React.Component<{}, ICreate> {
     })
   }
 
+  /**
+   * Handles the state change for creation
+   */
+  public handleOnCreate = () => {
+    this.setState({
+      createOpen: true
+    })
+  }
+  /**
+   * When we want to close the dialog, reset all states.
+   */
+  public handleOnCreateClose = () => {
+    this.setState({
+      createOpen: false,
+      username: "",
+      password: "",
+      confirmpassword: "",
+      email: "",
+    })
+  }
+
+  /**
+   * If account creation was successful, there should be a pop up.
+   */
+  public setSuccess = (isSuccessful: boolean) => {
+    this.setState({
+      success: isSuccessful
+    })
+  }
+
+  /**
+   * Handles the state change for loading
+   */
+  public isLoading = () => {
+    this.setState({
+      loading: true
+    })
+  }
+  public hasLoaded = () => {
+    this.setState({
+      loading: false
+    })
+  }
+
+  /**
+   * Upon clicking the create button, check information. If unexpected information is provided,
+   * alert the user.
+   * NOTE: This does not check if the user id already exists nor if the email is a real email.
+   */
+  public handleCreateConfirm = () => {
+    this.isLoading();
+    const formData = new FormData();
+    if (this.state.password !== this.state.confirmpassword) {
+      this.hasLoaded();
+      alert("Passwords do not match");
+      return;
+    }
+    formData.append("userName", this.state.username);
+    formData.append("password", this.state.password);
+    formData.append("email", this.state.email);
+    formData.append("photos", "");
+    this.addToAPI(formData);
+    this.handleOnCreateClose();
+  }
+
+  /**
+   * Calls a POST request to the api on another thread.
+   * Creates a new user according to the form data.
+   * 
+   * @param formData 
+   */
+  public async addToAPI(formData: FormData) {
+    const response = await fetch("https://photostorageapi.azurewebsites.net/api/Users", {
+      body: formData,
+      headers: { 'cache-control': 'no-cache' },
+      method: 'POST'
+    })
+    if (!response.ok) {
+      alert(response.statusText);
+    } else {
+      this.setState({
+        success: true
+      })
+    }
+    this.hasLoaded();
+  }
+
+  /**
+   * Creates the create account menu.
+   */
   public makeCreate = () => {
     return (
       <div>
@@ -71,7 +159,10 @@ class Create extends React.Component<{}, ICreate> {
           aria-labelledby="form-dialog-title"
           onClose={this.handleOnCreateClose}
         >
-          <DialogTitle id="form-dialog-title">Create Account</DialogTitle>
+          <DialogTitle 
+          id="form-dialog-title">
+            Create Account
+          </DialogTitle>
           <DialogContent>
             <TextField
               autoFocus={true}
@@ -109,83 +200,44 @@ class Create extends React.Component<{}, ICreate> {
 
           </DialogContent>
           <DialogActions>
-            <Button variant="outlined" color="primary" onClick={this.handleOnCreateClose}>
+            <Button 
+            variant="outlined" 
+            color="primary" 
+            onClick={this.handleOnCreateClose}>
               Cancel
-                  </Button>
-            <Button variant="outlined" color="primary" onClick={this.handleCreateConfirm}>
+            </Button>
+            <Button 
+            variant="outlined" 
+            color="primary" 
+            onClick={this.handleCreateConfirm}>
               Create
-                  </Button>
+            </Button>
           </DialogActions>
         </Dialog>
       </div>
     );
   }
 
-  /**
-   * Creating the dialog for creating account
-   */
-  public handleOnCreate = () => {
-    this.setState({
-      createOpen: true
-    })
-  }
-  public handleOnCreateClose = () => {
-    this.setState({
-      createOpen: false,
-      username: "",
-      password: "",
-      confirmpassword: "",
-      email: "",
-    })
-  }
-  public handleCreateConfirm = () => {
-    this.isLoading();
-    const formData = new FormData();
-    if (this.state.password !== this.state.confirmpassword) {
-      this.hasLoaded();
-      alert("Passwords do not match");
-      return;
-    }
-    formData.append("userName", this.state.username);
-    formData.append("password", this.state.password);
-    formData.append("email", this.state.email);
-    formData.append("photos", "");
-    this.addToAPI(formData);
-    this.handleOnCreateClose();
-  }
-
-  public async addToAPI(formData: FormData) {
-    const response = await fetch("https://photostorageapi.azurewebsites.net/api/Users", {
-      body: formData,
-      headers: { 'cache-control': 'no-cache' },
-      method: 'POST'
-    })
-    if (!response.ok) {
-      alert(response.statusText);
-    } else {
-      this.setState({
-        success: true
-      })
-    }
-    this.hasLoaded();
-  }
-
-  public isLoading = () => {
-    this.setState({
-      loading: true
-    })
-  }
-
-  public hasLoaded = () => {
-    this.setState({
-      loading: false
-    })
-  }
-
-  public setSuccess = (isSuccessful: boolean) => {
-    this.setState({
-      success: isSuccessful
-    })
+  public render() {
+    return (
+      <>
+        <Button 
+        variant="outlined" 
+        style={{width: '200px'}} 
+        onClick={this.handleOnCreate}>
+          Create Account
+        </Button>
+        <this.makeCreate/>
+        <Loading 
+        loaded={this.state.loading} 
+        />
+        <SuccessDialog 
+        message="Account created successfully!" 
+        isOpen={this.state.success} 
+        setSuccessful={this.setSuccess}
+        />
+      </>
+    );
   }
 }
 

@@ -67,7 +67,13 @@ const styles = (theme: Theme) =>
                 }
         });
 
-
+/**
+ * This class handles the creation of the different screens.
+ * Noted that the method used for this is not very
+ * good.
+ * 
+ * @author Brian Nguyen
+ */
 class LogInPanel extends React.Component<WithStyles<typeof styles>, ILogInState> {
         constructor(props: any) {
                 super(props);
@@ -88,57 +94,23 @@ class LogInPanel extends React.Component<WithStyles<typeof styles>, ILogInState>
                 this.handleLogInClick = this.handleLogInClick.bind(this);
 
         }
-
-        public render() {
-                return (
-                        <div onClick={() => { this.setState({ anyErrors: false }) }}>
-                                {this.state.correctLogin ? <this.makePhotoScreen /> : <this.makeLogIn />}
-                                <Loading loaded={this.state.loading} />
-                        </div>
-                );
-        }
-
+        /**
+         * Listens to the textfield changes from the log in.
+         */
         public setLogIn = () => {
                 this.setState({
                         correctLogin: true
                 })
         }
-        public makeLogIn = () => {
-                return (
-                        <>
-                                <CustomChatBot logIn={this.setLogIn} setGuest={this.setUserNameAndPass} />
-                                <div style={{ alignItems: 'center', paddingBottom: '20px' }}
-                                        className={this.props.classes.root}>
-                                        <TextField
-                                                style={{ width: "500px", fontSize: "50px" }}
-                                                id="standard-search"
-                                                label="User Name"
-                                                autoFocus={true}
-                                                onChange={this.handleUserChange}
-                                                error={this.state.anyErrors}
-                                                type="search"
-                                        />
-                                </div>
-                                <div style={{ paddingBottom: '20px' }}>
-                                        <TextField
-                                                style={{ width: "500px", fontSize: "50px" }}
-                                                id="outlined-password-input"
-                                                label="Password"
-                                                type="password"
-                                                onChange={this.handlePasswordchange}
-                                                error={this.state.anyErrors}
-                                                autoComplete="current-password" />
-                                </div>
-                                <div style={{ paddingBottom: '20px' }}>
-                                        <Button variant="raised" className={this.props.classes.cssRoot} onClick={this.handleLogInClick}>Log In </Button>
-                                </div>
-                                <Create />
-                                <Forgot />
-
-                        </>
-                )
+        public handleChangePassword = (value: any) => {
+                this.setState({
+                        editPassword: value
+                })
         }
 
+        /**
+         * Sets the user name and password to guest information.
+         */
         public setUserNameAndPass = (guestUser: any, guestPass: any) => {
                 this.setState({
                         username: guestUser,
@@ -146,148 +118,23 @@ class LogInPanel extends React.Component<WithStyles<typeof styles>, ILogInState>
                 })
         }
 
-        public makePhotoScreen = () => {
-                return (
-                        <div>
-                                <div className={this.props.classes.root}>
-                                        <this.makeSideBar />
-                                </div>
-                                <PhotoChatBot username={this.state.username} />
-                                <div>
-                                        <PhotoScreen username={this.state.username} />
-                                </div>
-
-
-                        </div>
-                );
-        }
-
-        public makeSideBar = () => {
-                return (
-                        <div className={this.props.classes.profileDiv}>
-                                <Tooltip title="Profile">
-                                        <IconButton
-                                                className={this.props.classes.profile}
-                                                onClick={this.handleMenuOpen}
-                                        >
-                                                <AccountBox style={{
-                                                        maxWidth:
-                                                                '75px',
-                                                        maxHeight: '75px',
-                                                        minWidth: '75px',
-                                                        minHeight: '75px',
-                                                        color: 'white'
-                                                }} />
-                                        </IconButton>
-                                </Tooltip>
-                                <Drawer anchor="right" open={this.state.open} onClose={this.handleMenuClose} style={{width:"100px"}}>
-                                        <MenuItem onClick={this.handleProfileClick} style={{width:"200px",fontSize: "30px"}}>
-                                                <ListItemText primary="Profile" style={{fontSize: "30px"}}/>
-                                        </MenuItem>
-                                        <MenuItem onClick={this.handleLogOut} style={{width:"200px",fontSize: "30px"}}>
-                                                <ListItemText primary="Log out" style={{fontSize: "30px"}}/>
-                                        </MenuItem>
-                                </Drawer>
-                                <this.createProfileMenu />
-                        </div>
-                );
-        }
-        public createProfileMenu = () => {
-                return (
-                        <Dialog
-                                open={this.state.profileOpen}
-                                onClose={this.handleProfileExit}>
-                                <DialogTitle id="form-dialog-title">{this.state.username}'s profile</DialogTitle>
-                                <DialogContent>
-                                        <div style={{ alignSelf: "left", alignItems: "left" }}>
-                                                <List component="nav">
-                                                        <ListItem button={true}
-                                                                onClick={() => this.handleChangePassword(true)}
-                                                                style={{ textAlign: 'left' }}>
-                                                                <ListItemText primary="Change password" />
-                                                        </ListItem>
-                                                        <ListItem button={true}
-                                                                onClick={()=>{this.handleDelete(true)}}
-                                                                style={{ textAlign: 'left' }}>
-                                                                <ListItemText primary="Delete Account" />
-                                                        </ListItem>
-                                                </List>
-                                        </div>
-                                        <ChangePasswordDialog username={this.state.username}
-                                                open={this.state.editPassword}
-                                                onClose={this.handleChangePassword} />
-                                </DialogContent>
-                                <this.confirmDelete/>
-                        </Dialog>
-                );
-        }
-
-        public handleChangePassword = (value: any) => {
-                this.setState({
-                        editPassword: value
-                })
-        }
-
+        /**
+         * Handles the delete button
+         */
         public handleDelete = (state: boolean) =>{
                 this.setState({
                         confirmation: state
                 })
         }
-
         public handleDeleteButton = () => {
                 this.deleteAccount(this.state.username);
                 this.handleProfileExit();
                 this.handleLogOut();
         }
-
-        public confirmDelete = () => {
-                return (
-                  <Dialog open={this.state.confirmation}
-                    onClose={() => {this.handleDelete(false)}}>
-                    <DialogContent>
-                      <DialogContentText>
-                        Do you wish to delete {this.state.username}?
-                      </DialogContentText>
-                    </DialogContent>
-                    <DialogActions>
-                      <DialogActions>
-                        <Button variant="outlined" onClick={this.handleDeleteButton} color="primary">
-                          Yes
-                      </Button>
-                        <Button variant="outlined" onClick={()=>{this.handleDelete(false)}} color="primary">
-                          No
-                      </Button>
-                      </DialogActions>
-                    </DialogActions>
-                  </Dialog>
-                );
-              }
-
-        public async deleteAccount(userId: string) {
-                const response = await fetch("https://photostorageapi.azurewebsites.net/api/Users/" + userId, {
-                        method: 'DELETE'
-                })
-                if (!response.ok) {
-                        alert(response.statusText);
-                } else {
-                        this.forceUpdate();
-                }
-        }
-
-        public handleMenuOpen = () => {
-                this.setState({
-                        open: true
-                })
-        }
-
-        public handleMenuClose = () => {
-                this.setState({
-                        open: false
-                })
-        }
-
+        /**
+         * Handles logging out
+         */
         public handleLogOut = () => {
-                // RESETS USER INFORMATION
                 this.setState({
                         username: "",
                         password: ""
@@ -295,7 +142,6 @@ class LogInPanel extends React.Component<WithStyles<typeof styles>, ILogInState>
                 this.handleMenuClose();
                 this.handleLogInClose();
         }
-
         public handleProfileClick = () => {
                 this.setState({
                         profileOpen: true
@@ -303,6 +149,9 @@ class LogInPanel extends React.Component<WithStyles<typeof styles>, ILogInState>
                 this.handleMenuClose();
         }
 
+        /**
+         * Allows the screen to switch to the log in screen.
+         */
         public handleProfileExit = () => {
                 this.setState({
                         profileOpen: false
@@ -328,14 +177,72 @@ class LogInPanel extends React.Component<WithStyles<typeof styles>, ILogInState>
         }
 
         /**
+         * Handles if there is an error
+         */
+        public setError = () => {
+                this.setState({
+                        anyErrors: true
+                })
+        }
+
+        /**
+         * Handles the menu opening
+         */
+        public handleMenuOpen = () => {
+                this.setState({
+                        open: true
+                })
+        }
+
+        public handleMenuClose = () => {
+                this.setState({
+                        open: false
+                })
+        }
+        
+        /**
          * Listens for when the user tries to log in.
          */
         public handleLogInClick = () => {
                 this.getUserName(this.state.username);
         }
+        public handleLogInClose = () => {
+                this.setState({
+                        correctLogin: false
+                })
+        }
 
         /**
-         * Calls for the user
+         * Checks if the api is still being called
+         */
+        public hasLoaded = () => {
+                this.setState({
+                        loading: false
+                })
+        }
+
+        public isLoading = () => {
+                this.setState({
+                        loading: true
+                })
+        }
+
+        /**
+         * Calls a DELETE request to delete information from the api.
+         */
+        public async deleteAccount(userId: string) {
+                const response = await fetch("https://photostorageapi.azurewebsites.net/api/Users/" + userId, {
+                        method: 'DELETE'
+                })
+                if (!response.ok) {
+                        alert(response.statusText);
+                } else {
+                        this.forceUpdate();
+                }
+        }
+
+        /**
+         * Uses a GET request to retrieve information from the api.
          * @param userId 
          */
         public async getUserName(userId: string) {
@@ -361,28 +268,205 @@ class LogInPanel extends React.Component<WithStyles<typeof styles>, ILogInState>
                 }
         }
 
-        public setError = () => {
-                this.setState({
-                        anyErrors: true
-                })
+        /**
+         * Creates the main log in screen.
+         */
+        public makeLogIn = () => {
+                return (
+                        <>
+                                <CustomChatBot 
+                                logIn={this.setLogIn} 
+                                setGuest={this.setUserNameAndPass} 
+                                />
+                                <div 
+                                style={{ alignItems: 'center', paddingBottom: '20px' }}
+                                className={this.props.classes.root}
+                                >
+                                        <TextField
+                                                style={{ width: "500px", fontSize: "50px" }}
+                                                id="standard-search"
+                                                label="User Name"
+                                                autoFocus={true}
+                                                onChange={this.handleUserChange}
+                                                error={this.state.anyErrors}
+                                                type="search"
+                                        />
+                                </div>
+                                <div style={{ paddingBottom: '20px' }}>
+                                        <TextField
+                                                style={{ width: "500px", fontSize: "50px" }}
+                                                id="outlined-password-input"
+                                                label="Password"
+                                                type="password"
+                                                onChange={this.handlePasswordchange}
+                                                error={this.state.anyErrors}
+                                                autoComplete="current-password" 
+                                        />
+                                </div>
+                                <div style={{ paddingBottom: '20px' }}>
+                                        <Button 
+                                        variant="raised" 
+                                        className={this.props.classes.cssRoot} 
+                                        onClick={this.handleLogInClick}>
+                                        Log In 
+                                        </Button>
+                                </div>
+                                <Create />
+                                <Forgot />
+                        </>
+                )
         }
 
-        public hasLoaded = () => {
-                this.setState({
-                        loading: false
-                })
+        /**
+         * Renders components from other files
+         */
+        public makePhotoScreen = () => {
+                return (
+                        <div>
+                                <div className={this.props.classes.root}>
+                                        <this.makeSideBar />
+                                </div>
+                                <PhotoChatBot username={this.state.username} />
+                                <div>
+                                        <PhotoScreen username={this.state.username} />
+                                </div>
+                        </div>
+                );
         }
 
-        public isLoading = () => {
-                this.setState({
-                        loading: true
-                })
+        /**
+         * Creates the pop up drawer when clicking the profile button.
+         */
+        public makeSideBar = () => {
+                return (
+                        <div className={this.props.classes.profileDiv}>
+                                <Tooltip title="Profile">
+                                        <IconButton
+                                                className={this.props.classes.profile}
+                                                onClick={this.handleMenuOpen}
+                                                >
+                                                <AccountBox style={{
+                                                        maxWidth:'75px',
+                                                        maxHeight: '75px',
+                                                        minWidth: '75px',
+                                                        minHeight: '75px',
+                                                        color: 'white'
+                                                        }} 
+                                                />
+                                        </IconButton>
+                                </Tooltip>
+                                <Drawer 
+                                anchor="right" 
+                                open={this.state.open} 
+                                onClose={this.handleMenuClose} 
+                                style={{width:"100px"}}
+                                >
+                                        <MenuItem 
+                                        onClick={this.handleProfileClick} 
+                                        style={{width:"200px",fontSize: "30px"}}
+                                        >
+                                                <ListItemText 
+                                                primary="Profile" 
+                                                style={{fontSize: "30px"}}
+                                                />
+                                        </MenuItem>
+                                        <MenuItem 
+                                        onClick={this.handleLogOut} 
+                                        style={{width:"200px",fontSize: "30px"}}
+                                        >
+                                                <ListItemText 
+                                                primary="Log out" 
+                                                style={{fontSize: "30px"}}
+                                                />
+                                        </MenuItem>
+                                </Drawer>
+                                <this.createProfileMenu />
+                        </div>
+                );
         }
 
-        public handleLogInClose = () => {
-                this.setState({
-                        correctLogin: false
-                })
+        /**
+         * Creates the component for when the user clicks on the profile 
+         * option from the drawer.
+         */
+        public createProfileMenu = () => {
+                return (
+                        <Dialog
+                                open={this.state.profileOpen}
+                                onClose={this.handleProfileExit}>
+                                <DialogTitle 
+                                id="form-dialog-title">
+                                        {this.state.username}'s profile
+                                </DialogTitle>
+                                <DialogContent>
+                                        <div style={{ alignSelf: "left", alignItems: "left" }}>
+                                                <List component="nav">
+                                                        <ListItem 
+                                                                button={true}
+                                                                onClick={() => this.handleChangePassword(true)}
+                                                                style={{ textAlign: 'left' }}>
+                                                                <ListItemText primary="Change password" />
+                                                        </ListItem>
+                                                        <ListItem 
+                                                                button={true}
+                                                                onClick={()=>{this.handleDelete(true)}}
+                                                                style={{ textAlign: 'left' }}>
+                                                                <ListItemText primary="Delete Account" />
+                                                        </ListItem>
+                                                </List>
+                                        </div>
+                                        <ChangePasswordDialog
+                                                username={this.state.username}
+                                                open={this.state.editPassword}
+                                                onClose={this.handleChangePassword} />
+                                </DialogContent>
+                                <this.confirmDelete/>
+                        </Dialog>
+                );
+        }
+
+        /**
+         * Creates the pop up dialog to confirm deleting an account
+         */
+        public confirmDelete = () => {
+                return (
+                <Dialog 
+                open={this.state.confirmation}
+                onClose={() => {this.handleDelete(false)}}>
+                        <DialogContent>
+                                <DialogContentText>
+                                        Do you wish to delete {this.state.username}?
+                                </DialogContentText>
+                        </DialogContent>
+                        <DialogActions>
+                                <DialogActions>
+                                        <Button 
+                                        variant="outlined" 
+                                        onClick={this.handleDeleteButton} 
+                                        color="primary"
+                                        >
+                                                Yes
+                                        </Button>
+                                        <Button 
+                                        variant="outlined" 
+                                        onClick={()=>{this.handleDelete(false)}} 
+                                        color="primary"
+                                        >
+                                                No
+                                        </Button>
+                                </DialogActions>
+                        </DialogActions>
+                </Dialog>
+                );
+        
+        }
+        public render() {
+                return (
+                        <div onClick={() => { this.setState({ anyErrors: false }) }}>
+                                {this.state.correctLogin ? <this.makePhotoScreen /> : <this.makeLogIn />}
+                                <Loading loaded={this.state.loading} />
+                        </div>
+                );
         }
 }
 

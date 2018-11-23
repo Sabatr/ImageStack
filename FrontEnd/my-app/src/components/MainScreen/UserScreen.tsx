@@ -7,7 +7,6 @@ import withStyles, { WithStyles } from '@material-ui/core/styles/withStyles';
 import withRoot from './WithRoot';
 import { Theme } from '../../../node_modules/@material-ui/core';
 import LogInPanel from '../login/LogInPanel';
-// import LogInPanel from '../login/LogInPanel';
 
 const styles = (theme: Theme) =>
   createStyles({
@@ -15,7 +14,13 @@ const styles = (theme: Theme) =>
            alignItems: 'left'
       },
   })
-  
+
+  /**
+   * Creates a centre screen for the user. It was too late before I realised how
+   * reduntant this class is, but it's okay.
+   * 
+   * @author Brian Nguyen
+   */
 class UserScreen extends React.Component<WithStyles<typeof styles>> {
 
         public render() {

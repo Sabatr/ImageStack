@@ -10,7 +10,6 @@ import {
     FacebookShareButton,
     GooglePlusShareButton,
     TwitterShareButton,
-
     FacebookIcon,
     TwitterIcon,
     GooglePlusIcon,
@@ -33,6 +32,13 @@ const styles = (theme: Theme) =>
 interface IProps extends WithStyles<typeof styles> {
     photo: any
 }
+
+/**
+ * This renders the share component. 
+ * This uses the react-share library: https://github.com/nygardk/react-share
+ * 
+ * @author Brian Nguyen
+ */
 class ShareButton extends React.Component<IProps, IState> {
     constructor(props: any) {
         super(props);
@@ -41,27 +47,24 @@ class ShareButton extends React.Component<IProps, IState> {
             anchor: this.state
         })
     }
-    public render() {
-        return (
-            <>
-                <Tooltip title="Share"><IconButton id="anchor" onClick={this.handleShareOpen}><Share /></IconButton></Tooltip>
-                <this.createShareMenu />
-            </>
-        );
-    }
 
+    /**
+     * Handles the events of pressing the button
+     */
     public handleShareOpen = (event: any) => {
         this.setState({
             share: true,
         })
     }
-
     public handleShareclose = () => {
         this.setState({
             share: false
         })
     }
 
+    /**
+     * Creates the pop up menu when the button is clicked.
+     */
     public createShareMenu = () => {
         return (
             <Menu
@@ -73,51 +76,71 @@ class ShareButton extends React.Component<IProps, IState> {
             >
                 <Tooltip title="Facebook" placement="right-start">
                     <MenuItem onClick={this.handleShareclose}>
-
                         <FacebookShareButton
                             url={this.props.photo.photoUrl}
-                            quote={this.props.photo.photoTitle + "\n" + this.props.photo.photoDescription}>
+                            quote={this.props.photo.photoTitle + "\n" + 
+                            this.props.photo.photoDescription}>
                             <FacebookIcon
                                 size={32}
-                                round={true} />
+                                round={true} 
+                            />
                         </FacebookShareButton>
-
                     </MenuItem>
                 </Tooltip>
                 <Tooltip title="Twitter" placement="right-start">
                     <MenuItem onClick={this.handleShareclose}>
                         <TwitterShareButton
                             url={this.props.photo.photoUrl}
-                            title={this.props.photo.photoTitle + "\n" + this.props.photo.photoDescription}>
+                            title={this.props.photo.photoTitle + "\n" + 
+                            this.props.photo.photoDescription}>
                             <TwitterIcon
                                 size={32}
-                                round={true} />
+                                round={true} 
+                            />
                         </TwitterShareButton>
                     </MenuItem>
                 </Tooltip>
                 <Tooltip title="Google Plus" placement="right-start">
                     <MenuItem onClick={this.handleShareclose}>
-
                         <GooglePlusShareButton
                             url={this.props.photo.photoUrl}>
                             <GooglePlusIcon
                                 size={32}
-                                round={true} />
+                                round={true} 
+                            />
                         </GooglePlusShareButton>
                     </MenuItem>
                 </Tooltip>
                 <Tooltip title="Reddit" placement="right-start">
                     <MenuItem onClick={this.handleShareclose}>
-
-                        <RedditShareButton url={this.props.photo.photoUrl}
-                            title={this.props.photo.photoTitle}
+                        <RedditShareButton 
+                        url={this.props.photo.photoUrl}
+                        title={this.props.photo.photoTitle}
                         >
-                            <RedditIcon size={32}
-                                round={true} />
+                            <RedditIcon 
+                            size={32}
+                            round={true} 
+                            />
                         </RedditShareButton>
                     </MenuItem>
                 </Tooltip>
             </Menu >
+        );
+    }
+
+    public render() {
+        return (
+            <>
+                <Tooltip 
+                title="Share">
+                    <IconButton 
+                    id="anchor" 
+                    onClick={this.handleShareOpen}>
+                        <Share />
+                    </IconButton>
+                </Tooltip>
+                <this.createShareMenu />
+            </>
         );
     }
 }

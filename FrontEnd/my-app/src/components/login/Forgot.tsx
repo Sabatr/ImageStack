@@ -10,51 +10,17 @@ interface IForgot {
     forgot: boolean
 }
 
+/**
+ * This creates a component and handles the events accordingly
+ * 
+ * @author Brian Nguyen
+ */
 class Forgot extends React.Component<{},IForgot> {
     constructor(props: any) {
         super(props);
         this.state =({
             forgot: false
         })
-    }
-    public render() {
-        return (
-            <>
-                <Button variant="outlined" style={{width: '200px'}} onClick={this.handleForgotPassword}>Forgot Password </Button>
-                <this.makeForgot/>
-            </>
-        );
-    }
-
-    public makeForgot = () => {
-        return (
-                <>
-                    <Dialog
-                        open={this.state.forgot}
-                        aria-labelledby="form-dialog-title"
-                        onClose={this.handleForgotPasswordClose}
-                    > 
-                    <DialogTitle id="form-dialog-title">Forgot Password</DialogTitle>
-                    <DialogContent>
-                    <TextField
-                    margin="dense"
-                    id="name"
-                    label="Email Address"
-                    type="email"
-                    fullWidth={true}
-                    />
-                    </DialogContent>
-                    <DialogActions>
-                            <Button variant="outlined" color="primary" onClick={this.handleForgotPasswordClose}>
-                                    Cancel
-                            </Button>
-                            <Button variant="outlined" color="primary" onClick={this.handleForgotConfirm}>
-                                    Confirm
-                            </Button>
-                            </DialogActions>
-                    </Dialog>
-                </>
-        );
     }
     
     /**
@@ -72,8 +38,64 @@ class Forgot extends React.Component<{},IForgot> {
     }
     public handleForgotConfirm = () => {
             this.handleForgotPasswordClose();
-            // TODO: Do some confirming stuff and creating stuff
     }
+
+    /**
+     * Makes the component for the forget component.
+     */
+    public makeForgot = () => {
+        return (
+                <>
+                    <Dialog
+                        open={this.state.forgot}
+                        aria-labelledby="form-dialog-title"
+                        onClose={this.handleForgotPasswordClose}
+                    > 
+                    <DialogTitle 
+                    id="form-dialog-title">
+                    Forgot Password
+                    </DialogTitle>
+                    <DialogContent>
+                    <TextField
+                    margin="dense"
+                    id="name"
+                    label="Email Address"
+                    type="email"
+                    fullWidth={true}
+                    />
+                    </DialogContent>
+                    <DialogActions>
+                            <Button 
+                            variant="outlined" 
+                            color="primary" 
+                            onClick={this.handleForgotPasswordClose}>
+                                Cancel
+                            </Button>
+                            <Button 
+                            variant="outlined" 
+                            color="primary" 
+                            onClick={this.handleForgotConfirm}>
+                                    Confirm
+                            </Button>
+                            </DialogActions>
+                    </Dialog>
+                </>
+        );
+    }
+
+    public render() {
+        return (
+            <>
+                <Button 
+                variant="outlined" 
+                style={{width: '200px'}} 
+                onClick={this.handleForgotPassword}>
+                Forgot Password </Button>
+                <this.makeForgot/>
+            </>
+        );
+    }
+
 }
 
 export default Forgot

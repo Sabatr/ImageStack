@@ -1,9 +1,15 @@
 import * as React from 'react';
 import './App.css';
-// import LogInPanel from './components/login/LogInPanel';
 import UserScreen from './components/MainScreen/UserScreen';
 import Logo from './images/ImageStack1.png'
 
+/**
+ * The beginning point of the web app.
+ * This application allows the user to take/upload photos
+ * and store them online.
+ * 
+ * @author Brian Nguyen
+ */
 class App extends React.Component {
   public render() {
     return (

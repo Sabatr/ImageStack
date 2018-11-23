@@ -27,6 +27,12 @@ enum buttonClicked {
     camera,
     upload
 }
+
+/**
+ * Creates a component for the addition of new photos.
+ * 
+ * @author Brian Nguyen
+ */
 class AddDialog extends React.Component<IProps, IState> {
     constructor(props: any) {
         super(props);
@@ -42,83 +48,9 @@ class AddDialog extends React.Component<IProps, IState> {
         this.handleFileUpload = this.handleFileUpload.bind(this);
     }
 
-    public render() {
-        return (
-            <div style={{paddingTop:'10px'}} >
-                <Button variant="raised" 
-                color="primary"
-                onClick={this.handleOnCreate}>Add a photo<Icon><Add/></Icon></Button>
-                <this.makeAddDialog />
-                <Loading loaded={this.state.loading} />
-            </div>
-        )
-    }
-    public makeAddDialog = () => {
-        return (
-            <div>
-                <Dialog
-                    open={this.state.add}
-                    aria-labelledby="form-dialog-title"
-                    onClose={this.handleOnCreateClose}
-                >
-                    <DialogTitle id="form-dialog-title">Add a photo</DialogTitle>
-                    <DialogContent>
-                        <TextField
-                            autoFocus={true}
-                            margin="dense"
-                            id="name"
-                            label="Title"
-                            fullWidth={true}
-                            onChange={this.handleTitleChange}
-                        />
-                        <TextField
-                            id="outlined-password-input"
-                            margin="dense"
-                            label="Description"
-                            variant="outlined"
-                            multiline={true}
-                            rows={4}
-                            rowsMax={4}
-                            fullWidth={true}
-                            onChange={this.handleDescriptionChange}
-
-                        />
-                        {this.state.uploadFileList !== null || this.state.imageFile !== null ?
-                            <div>
-                                <Tooltip title="Remove">
-                                <Button variant="outlined" onClick={this.handleRemoveSelected}>
-                                Click to remove image.
-                                <Icon><Close style={{color:"red"}}/>
-                                </Icon></Button>
-                                </Tooltip>
-                            </div>
-                            :
-                            <div style={{display: 'table', textAlign: 'center' ,paddingTop:'20px'}}>
-                                <div style={{ display: 'table-cell' , paddingRight: '20px'}} >
-                                    <Input type="file" onChange={this.handleFileUpload} id="raised-button-file" className="form-control-file" style={{ display: 'none' }} />
-                                    <label htmlFor="raised-button-file">
-                                        <Button variant="raised" component="span">Upload<Icon><Publish/></Icon></Button>
-                                    </label>
-                                </div>
-                                <div style={{ display: 'table-cell'}}  >
-                                    <TakePhoto handleFileUpload={this.convertBase64ToFile} />
-                                </div>
-                            </div>
-                        }
-                    </DialogContent>
-                    <DialogActions>
-                        <Button variant="outlined" color="primary" onClick={this.handleOnCreateClose}>
-                            Cancel
-                      </Button>
-                        <Button variant="outlined" color="primary" onClick={this.handleAdd}>
-                            Add
-                </Button>
-                    </DialogActions>
-                </Dialog>
-            </div>
-        )
-    }
-
+    /**
+     * When the dialog closes, reset parameters.
+     */
     public handleRemoveSelected = () => {
         this.setState({
             title: "",
@@ -127,6 +59,10 @@ class AddDialog extends React.Component<IProps, IState> {
             imageFile: null
         })
     }
+
+    /**
+     * Handler for creating a new photo
+     */
     public handleOnCreate = () => {
         this.setState({
             add: true
@@ -138,23 +74,64 @@ class AddDialog extends React.Component<IProps, IState> {
         })
         this.handleRemoveSelected();
     }
+
+    /**
+     * Keeps track of the input fields' values.
+     */
     public handleTitleChange = (event: any) => {
         this.setState({
             title: event.target.value
         })
     }
-
     public handleDescriptionChange = (event: any) => {
         this.setState({
             description: event.target.value
         })
     }
-
     public handleFileUpload(fileList: any) {
         this.setState({
             uploadFileList: fileList.target.files,
             typeOfButton: buttonClicked.upload
         })
+    }
+
+    /**
+     * Determines if the loading symbol needs to be rendered.
+     */
+    public hasLoaded = () => {
+        this.setState({
+            loading: false
+        })
+    }
+    public isLoading = () => {
+        this.setState({
+            loading: true
+        })
+    }
+
+    /**
+     * Checks if the input in the text fields and files are legal.
+     * The file is appended as form data.
+     */
+    public handleAdd = () => {
+        this.isLoading();
+        if (this.state.title === "" || this.state.uploadFileList === undefined) {
+            alert("no image selected");
+            this.hasLoaded();
+            this.handleOnCreateClose();
+            return;
+        }
+        let imageFile;
+        (this.state.typeOfButton === buttonClicked.upload) ? imageFile =
+            this.state.uploadFileList[0] : imageFile = this.state.imageFile
+        // Should also add to the api. Then when it rerenders it will include the api with it.
+        const formData = new FormData();
+        formData.append("photoTitle", this.state.title);
+        formData.append("photoDescription", this.state.description);
+        formData.append("userId", this.props.username);
+        formData.append("image", imageFile);
+        this.addNew(formData);
+        this.handleOnCreateClose();
     }
 
     /**
@@ -178,26 +155,10 @@ class AddDialog extends React.Component<IProps, IState> {
         })
     };
 
-    public handleAdd = () => {
-        this.isLoading();
-        if (this.state.title === "" || this.state.uploadFileList === undefined) {
-            alert("no image selected");
-            this.handleOnCreateClose();
-            return;
-        }
-        let imageFile;
-        (this.state.typeOfButton === buttonClicked.upload) ? imageFile =
-            this.state.uploadFileList[0] : imageFile = this.state.imageFile
-        // Should also add to the api. Then when it rerenders it will include the api with it.
-        const formData = new FormData();
-        formData.append("photoTitle", this.state.title);
-        formData.append("photoDescription", this.state.description);
-        formData.append("userId", this.props.username);
-        formData.append("image", imageFile);
-        this.addNew(formData);
-        this.handleOnCreateClose();
-    }
-
+    /**
+     * Creates a new photo and stores it in the api using a POST
+     * request. 
+     */
     public async addNew(formData: FormData) {
         const response = await fetch("https://photostorageapi.azurewebsites.net/api/Photos/Upload/" + this.props.username, {
             body: formData,
@@ -215,17 +176,109 @@ class AddDialog extends React.Component<IProps, IState> {
     }
 
     /**
-     * Determines if the loading symbol needs to be rendered.
+     * Creates a dialog for the addition of photos. 
+     * If statements are used to rerender the components when necessary.
      */
-    public hasLoaded = () => {
-        this.setState({
-            loading: false
-        })
+    public makeAddDialog = () => {
+        return (
+            <div>
+                <Dialog
+                    open={this.state.add}
+                    aria-labelledby="form-dialog-title"
+                    onClose={this.handleOnCreateClose}
+                >
+                    <DialogTitle 
+                    id="form-dialog-title">
+                        Add a photo
+                    </DialogTitle>
+                    <DialogContent>
+                        <TextField
+                            autoFocus={true}
+                            margin="dense"
+                            id="name"
+                            label="Title"
+                            fullWidth={true}
+                            onChange={this.handleTitleChange}
+                        />
+                        <TextField
+                            id="outlined-password-input"
+                            margin="dense"
+                            label="Description"
+                            variant="outlined"
+                            multiline={true}
+                            rows={4}
+                            rowsMax={4}
+                            fullWidth={true}
+                            onChange={this.handleDescriptionChange}
+                        />
+                        {this.state.uploadFileList !== null || this.state.imageFile !== null ?
+                            <div>
+                                <Tooltip title="Remove">
+                                    <Button variant="outlined" 
+                                    onClick={this.handleRemoveSelected}>
+                                        Click to remove image.
+                                        <Icon>
+                                            <Close style={{color:"red"}}/>
+                                        </Icon>
+                                    </Button>
+                                </Tooltip>
+                            </div>
+                            :
+                            <div style={{display: 'table', textAlign: 'center' ,paddingTop:'20px'}}>
+                                <div style={{ display: 'table-cell' , paddingRight: '20px'}} >
+                                    <Input 
+                                    type="file" 
+                                    onChange={this.handleFileUpload} 
+                                    id="raised-button-file" 
+                                    className="form-control-file" 
+                                    style={{ display: 'none' }} 
+                                    />
+                                    <label 
+                                    htmlFor="raised-button-file">
+                                        <Button 
+                                        variant="raised" 
+                                        component="span">
+                                            Upload
+                                            <Icon>
+                                                <Publish/>
+                                            </Icon>
+                                        </Button>
+                                    </label>
+                                </div>
+                                <div style={{ display: 'table-cell'}}  >
+                                    <TakePhoto handleFileUpload={this.convertBase64ToFile} />
+                                </div>
+                            </div>
+                        }
+                    </DialogContent>
+                    <DialogActions>
+                        <Button variant="outlined" color="primary" onClick={this.handleOnCreateClose}>
+                            Cancel
+                      </Button>
+                        <Button variant="outlined" color="primary" onClick={this.handleAdd}>
+                            Add
+                </Button>
+                    </DialogActions>
+                </Dialog>
+            </div>
+        )
     }
-    public isLoading = () => {
-        this.setState({
-            loading: true
-        })
+
+    public render() {
+        return (
+            <div style={{paddingTop:'10px'}} >
+                <Button variant="raised" 
+                color="primary"
+                onClick={this.handleOnCreate}>
+                    Add a photo
+                    <Icon>
+                        <Add/>
+                    </Icon>
+                </Button>
+                <this.makeAddDialog />
+                <Loading loaded={this.state.loading} />
+            </div>
+        )
     }
 }
 

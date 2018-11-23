@@ -11,7 +11,6 @@ const styles = (theme: Theme) =>
         root: {
             backgroundColor: "transparent"
         },
-
         paper: {
             backgroundColor: "transparent",
             boxShadow: "none",
@@ -20,7 +19,12 @@ const styles = (theme: Theme) =>
 
     })
 
-
+/**
+ * Creates a loading screen. It's pretty much a dialog with a
+ * transparent background.
+ * 
+ * @author Brian Nguyen
+ */    
 class Loading extends React.Component<IProps, {}> {
     public render() {
         return (

@@ -8,6 +8,12 @@ interface IProps {
     logIn: () => void
     setGuest: (name: any, password: any) => void
 }
+
+/**
+ * A chat bot used from https://lucasbassetti.com.br/react-simple-chatbot/
+ * 
+ * @author Brian Nguyen & Lucas Bassetti
+ */
 class CustomChatBot extends React.Component<IProps, IState> {
     constructor(props: any) {
         super(props);
@@ -15,15 +21,18 @@ class CustomChatBot extends React.Component<IProps, IState> {
             showBot: false
         })
     }
-    public render() {
-        return (
-            <div>
-                <this.showChatBot/>
-            </div>
 
-        );
+    /**
+     * Allows the chat bot to log in the user to the "guest" account
+     */
+    public guestLogIn =() => {
+        this.props.setGuest("guest","guest");
+        this.props.logIn();
     }
 
+    /**
+     * Renders the chat bot and sets all the states to it.
+     */
     public showChatBot = () => {
         return (
             <ChatBot
@@ -83,9 +92,12 @@ class CustomChatBot extends React.Component<IProps, IState> {
         )
     }
 
-    public guestLogIn =() => {
-        this.props.setGuest("guest","guest");
-        this.props.logIn();
+    public render() {
+        return (
+            <div>
+                <this.showChatBot/>
+            </div>
+        );
     }
 }
 

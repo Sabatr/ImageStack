@@ -7,6 +7,12 @@ interface IState {
 interface IProps {
     username: any
 }
+
+/**
+ * The component that is rendered. Used the simple-react-bot library: https://lucasbassetti.com.br/react-simple-chatbot/
+ * 
+ * @author Brian Nguyen & Lucas Bassetti
+ */
 class PhotoChatBot extends React.Component<IProps, IState> {
     constructor(props: any) {
         super(props);
@@ -14,15 +20,10 @@ class PhotoChatBot extends React.Component<IProps, IState> {
             showBot: false
         })
     }
-    public render() {
-        return (
-            <div>
-                <this.showChatBot />
-            </div>
 
-        );
-    }
-
+    /**
+     * Renders the chat bot for the photo screen 
+     */
     public showChatBot = () => {
         return (
             <ChatBot
@@ -116,6 +117,14 @@ class PhotoChatBot extends React.Component<IProps, IState> {
                 ]}
             />
         )
+    }
+
+    public render() {
+        return (
+            <div>
+                <this.showChatBot />
+            </div>
+        );
     }
 }
 

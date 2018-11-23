@@ -78,6 +78,11 @@ interface IProps extends WithStyles<typeof styles> {
   username: any
 }
 
+/**
+ * This class handles the components that are related to the photo screen (Main screen)
+ * 
+ * @author Brian Nguyen
+ */
 class Index extends React.Component<IProps, IState> {
   constructor(props: any) {
     super(props);
@@ -97,119 +102,9 @@ class Index extends React.Component<IProps, IState> {
     this.storeInfo = this.storeInfo.bind(this);
   }
 
-  public render() {
-    return (
-      <div className={this.props.classes.root} >
-        <AddDialog username={this.props.username} storeInfo={this.storeInfo} />
-        <GridList cellHeight={350} cols={4} className={this.props.classes.gridList} spacing={1}>
-          {this.state.data.map((photo: any) => (
-            <GridListTile key={photo.photoId} >
-              <img src={photo.photoUrl} alt={photo.photoTitle} />
-              <GridListTileBar
-                style={{ backgroundColor: "rgba(0,0,0,0.8)" }}
-                title={photo.photoTitle}
-                subtitle={<span>Made on: {photo.dateMade}</span>}
-                actionIcon={
-                  <Tooltip title="Expand" placement="top">
-                    <IconButton onClick={this.handlePhotoClick.bind(this, photo)} className={this.props.classes.icon}>
-                      <Fullscreen/>
-                    </IconButton>
-                  </Tooltip>
-                }
-              />
-            </GridListTile>
-          ))}
-        </GridList>
-        <this.displayContent />
-        <Loading loaded={this.state.loading} />
-      </div>
-    );
-  }
-
   /**
-   * Displays the popup when the user selects fullscreen
+   * Handles the handling of opening the enlargened photo
    */
-  public displayContent = () => {
-    return (
-      <Paper>
-        <Dialog open={this.state.photoClick}
-          onClose={this.handlePhotoClose}
-          scroll='body'
-          fullWidth={true}
-          aria-labelledby="scroll-dialog-title">
-          {!this.state.editing ?
-            <DialogTitle id="form-dialog-title">
-              {this.state.selectedPhoto.photoTitle}
-            </DialogTitle>
-            :
-            <InputBase className={this.props.classes.dialogTitle}
-              defaultValue={this.state.selectedPhoto.photoTitle}
-              onChange={this.handleTitleChange}
-              autoFocus={true} />
-          }
-          <DialogContent className={this.state.selectedPhoto.photoTitle} >
-            {!this.state.editing ?
-              <DialogContentText
-                className={this.props.classes.description}>
-                {this.state.selectedPhoto.photoDescription}
-              </DialogContentText>
-              :
-              <InputBase
-                multiline={true}
-                fullWidth={true}
-                defaultValue={this.state.selectedPhoto.photoDescription}
-                onChange={this.handleDescriptionChange}
-              />
-            }
-
-            <img src={this.state.selectedPhoto.photoUrl} height='100%' width='100%' />
-            {!this.state.editing ?
-              <div style={{ display: 'inline-block' }}>
-                <Tooltip title="Edit"><IconButton onClick={this.enableEdit}><Edit /> </IconButton></Tooltip>
-                <Tooltip title="Delete"><IconButton onClick={this.handleDeleteClick}>
-                  <Delete />
-                </IconButton></Tooltip>
-                <ShareButton photo={this.state.selectedPhoto} />
-              </div>
-              :
-              <div>
-                <Tooltip title="Confirm edit"><IconButton onClick={this.confirmEdit}><Check /></IconButton></Tooltip>
-                <Tooltip title="Cancel edit"><IconButton onClick={this.disableEdit}><Close /></IconButton></Tooltip>
-              </div>
-            }
-            <this.confirmDelete />
-          </DialogContent>
-        </Dialog>
-      </Paper>
-    );
-  }
-
-  /**
-   * Creates the dialog for deletion
-   */
-  public confirmDelete = () => {
-    return (
-      <Dialog open={this.state.confirmation}
-        onClose={this.handleDeleteClose}>
-        <DialogContent>
-          <DialogContentText>
-            Do you wish to delete?
-          </DialogContentText>
-        </DialogContent>
-        <DialogActions>
-          <DialogActions>
-            <Button variant="outlined" onClick={this.handleDeleteConfirm} color="primary">
-              Yes
-          </Button>
-            <Button variant="outlined" onClick={this.handleDeleteClose} color="primary">
-              No
-          </Button>
-          </DialogActions>
-        </DialogActions>
-      </Dialog>
-    );
-  }
-
   public handleClose = () => {
     this.setState({
       open: false,
@@ -222,50 +117,35 @@ class Index extends React.Component<IProps, IState> {
     });
   };
 
-  public async storeInfo() {
-    this.isLoading();
-    const photoList = await fetch("https://photostorageapi.azurewebsites.net/api/Photos/" + this.props.username);
-    const photoData = await photoList.json();
-    this.setState({
-      data: photoData
-    })
-    this.hasLoaded();
-  }
-
+  /**
+   * Upon loading, populate the grids
+   */
   public componentDidMount() {
     this.storeInfo();
   }
 
+  /**
+   * The following section handles the deletion
+   */
   public handleDeleteClick = () => {
     this.setState({
       confirmation: true
     });
   }
-
   public handleDeleteClose = () => {
     this.setState({
       confirmation: false
     })
   }
-
   public handleDeleteConfirm = () => {
     this.deletePhoto();
     this.handleDeleteClose();
     this.handlePhotoClose();
   }
 
-  public async deletePhoto() {
-    const response = await fetch("https://photostorageapi.azurewebsites.net//api/Photos/" + this.state.selectedPhoto.photoId, {
-      method: 'DELETE'
-    })
-    if (response.ok) {
-      this.storeInfo();
-      this.forceUpdate();
-    } else {
-      alert(response.statusText)
-    }
-  }
-
+  /**
+   * Notifies the system about which photo is selected
+   */
   public handlePhotoClick = (tile: any) => {
     this.setState({
       photoClick: true,
@@ -285,25 +165,90 @@ class Index extends React.Component<IProps, IState> {
       description: this.state.selectedPhoto.photoDescription
     })
   }
-
   public disableEdit = () => {
     this.setState({
       editing: false
     })
   }
-
   public confirmEdit = () => {
     this.disableEdit();
     this.editInDataBase();
     this.handlePhotoClose();
   }
 
+  /**
+   * Keeps track of the text fields when creating a new photo
+   */
+  public handleTitleChange = (event: any) => {
+    this.setState({
+      title: event.target.value
+    })
+  }
+  public handleDescriptionChange = (event: any) => {
+    this.setState({
+      description: event.target.value
+    })
+  }
+
+  /**
+   * Upon closing the dialog is closed
+   */
+  public handlePhotoClose = () => {
+    this.disableEdit();
+    this.setState({
+      photoClick: false
+    })
+  }
+
+  /**
+   * Determines if the loading symbol needs to be rendered.
+   */
+  public hasLoaded = () => {
+    this.setState({
+      loading: false
+    })
+  }
+  public isLoading = () => {
+    this.setState({
+      loading: true
+    })
+  }
+
+  /**
+   * Asynchronously deletes a photo.
+   */
+  public async deletePhoto() {
+    const response = await fetch("https://photostorageapi.azurewebsites.net//api/Photos/" + this.state.selectedPhoto.photoId, {
+      method: 'DELETE'
+    })
+    if (response.ok) {
+      this.storeInfo();
+      this.forceUpdate();
+    } else {
+      alert(response.statusText)
+    }
+  }
+
+  /**
+   * Retrieves the current information in the api, then store it locally for loading times.
+   */
+  public async storeInfo() {
+    this.isLoading();
+    const photoList = await fetch("https://photostorageapi.azurewebsites.net/api/Photos/" + this.props.username);
+    const photoData = await photoList.json();
+    this.setState({
+      data: photoData
+    })
+    this.hasLoaded();
+  }
+  /**
+   * Calls a PUT request to allow the user to edit information from the database
+   */
   public async editInDataBase() {
     if (this.state.title === "") {
       alert("Please enter a title");
       return;
     }
-
     const response = await fetch("https://photostorageapi.azurewebsites.net//api/Photos/" + this.state.selectedPhoto.photoId,
       {
         body: JSON.stringify({
@@ -326,36 +271,139 @@ class Index extends React.Component<IProps, IState> {
     }
   }
 
-  public handleTitleChange = (event: any) => {
-    this.setState({
-      title: event.target.value
-    })
-  }
 
-  public handleDescriptionChange = (event: any) => {
-    this.setState({
-      description: event.target.value
-    })
-  }
-  public handlePhotoClose = () => {
-    this.disableEdit();
-    this.setState({
-      photoClick: false
-    })
+  /**
+   * Displays the popup when the user selects fullscreen
+   */
+  public displayContent = () => {
+    return (
+      <Paper>
+        <Dialog 
+        open={this.state.photoClick}
+        onClose={this.handlePhotoClose}
+        scroll='body'
+        fullWidth={true}
+        aria-labelledby="scroll-dialog-title">
+        {!this.state.editing ?
+          <DialogTitle id="form-dialog-title">
+            {this.state.selectedPhoto.photoTitle}
+          </DialogTitle>
+        :
+          <InputBase 
+          className={this.props.classes.dialogTitle}
+          defaultValue={this.state.selectedPhoto.photoTitle}
+          onChange={this.handleTitleChange}
+          autoFocus={true} />
+          }
+          <DialogContent 
+          className={this.state.selectedPhoto.photoTitle} >
+          {!this.state.editing ?
+            <DialogContentText
+              className={this.props.classes.description}>
+              {this.state.selectedPhoto.photoDescription}
+            </DialogContentText>
+          :
+          <InputBase
+            multiline={true}
+            fullWidth={true}
+            defaultValue={this.state.selectedPhoto.photoDescription}
+            onChange={this.handleDescriptionChange}
+          />
+          }
+          <img src={this.state.selectedPhoto.photoUrl} height='100%' width='100%' />
+          {!this.state.editing ?
+            <div style={{ display: 'inline-block' }}>
+                <Tooltip title="Edit"><IconButton onClick={this.enableEdit}><Edit /> </IconButton></Tooltip>
+                <Tooltip 
+                title="Delete">
+                  <IconButton onClick={this.handleDeleteClick}>
+                    <Delete />
+                  </IconButton>
+                </Tooltip>
+                <ShareButton photo={this.state.selectedPhoto} />
+            </div>
+          :
+            <div>
+              <Tooltip title="Confirm edit"><IconButton onClick={this.confirmEdit}><Check /></IconButton></Tooltip>
+              <Tooltip title="Cancel edit"><IconButton onClick={this.disableEdit}><Close /></IconButton></Tooltip>
+            </div>
+          }
+          <this.confirmDelete />
+          </DialogContent>
+        </Dialog>
+      </Paper>
+    );
   }
 
   /**
-   * Determines if the loading symbol needs to be rendered.
+   * Creates the dialog for deletion
    */
-  public hasLoaded = () => {
-    this.setState({
-      loading: false
-    })
+  public confirmDelete = () => {
+    return (
+      <Dialog 
+      open={this.state.confirmation}
+      onClose={this.handleDeleteClose}>
+        <DialogContent>
+          <DialogContentText>
+            Do you wish to delete?
+          </DialogContentText>
+        </DialogContent>
+        <DialogActions>
+          <DialogActions>
+            <Button 
+            variant="outlined" 
+            onClick={this.handleDeleteConfirm} color="primary">
+              Yes
+          </Button>
+            <Button 
+            variant="outlined" 
+            onClick={this.handleDeleteClose} color="primary">
+              No
+          </Button>
+          </DialogActions>
+        </DialogActions>
+      </Dialog>
+    );
   }
-  public isLoading = () => {
-    this.setState({
-      loading: true
-    })
+
+  public render() {
+    return (
+      <div className={this.props.classes.root} >
+        <AddDialog 
+        username={this.props.username} 
+        storeInfo={this.storeInfo} 
+        />
+        <GridList 
+        cellHeight={350} 
+        cols={4} 
+        className={this.props.classes.gridList} 
+        spacing={1}>
+          {this.state.data.map((photo: any) => (
+            <GridListTile 
+            key={photo.photoId} >
+            <img src={photo.photoUrl} 
+            alt={photo.photoTitle} />
+              <GridListTileBar
+                style={{ backgroundColor: "rgba(0,0,0,0.8)" }}
+                title={photo.photoTitle}
+                subtitle={<span>Made on: {photo.dateMade}</span>}
+                actionIcon={
+                  <Tooltip title="Expand" placement="top">
+                    <IconButton 
+                    onClick={this.handlePhotoClick.bind(this, photo)} 
+                    className={this.props.classes.icon}>
+                      <Fullscreen/>
+                    </IconButton>
+                  </Tooltip>
+                }
+              />
+            </GridListTile>
+          ))}
+        </GridList>
+        <this.displayContent />
+        <Loading loaded={this.state.loading} />
+      </div>
+    );
   }
 }
 
