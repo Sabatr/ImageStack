@@ -5,10 +5,9 @@ interface IState {
 }
 
 interface IProps {
-    logIn: () => void
-    setGuest: (name: any, password: any) => void
+    username: any
 }
-class CustomChatBot extends React.Component<IProps, IState> {
+class PhotoChatBot extends React.Component<IProps, IState> {
     constructor(props: any) {
         super(props);
         this.state = ({
@@ -18,7 +17,7 @@ class CustomChatBot extends React.Component<IProps, IState> {
     public render() {
         return (
             <div>
-                <this.showChatBot/>
+                <this.showChatBot />
             </div>
 
         );
@@ -33,7 +32,7 @@ class CustomChatBot extends React.Component<IProps, IState> {
                 steps={[
                     {
                         id: '1',
-                        message: 'Welcome to ImageStack, would you like some help?',
+                        message: 'Hi ' +this.props.username+', what would you like help with?',
                         trigger: '2',
                     },
                     {
@@ -57,15 +56,8 @@ class CustomChatBot extends React.Component<IProps, IState> {
                     },
                     {
                         id: 'LogIn',
-                        message: 'You must have an existing account to log in. Woud you like to log in to a pubilc account?',
-                        trigger: 'ChooseLogIn'
-                    },
-                    {
-                        id: 'ChooseLogIn',
-                        options: [
-                            { value: 1, label: 'Yes', trigger: this.guestLogIn },
-                            { value: 2, label: 'No', trigger: 'ChooseHelp' },
-                        ],
+                        message: 'To log in..',
+                        trigger: 'ChooseHelp'
                     },
                     {
                         id: 'CreateAccount',
@@ -81,11 +73,6 @@ class CustomChatBot extends React.Component<IProps, IState> {
             />
         )
     }
-
-    public guestLogIn =() => {
-        this.props.setGuest("guest","guest");
-        this.props.logIn();
-    }
 }
 
-export default CustomChatBot
+export default PhotoChatBot

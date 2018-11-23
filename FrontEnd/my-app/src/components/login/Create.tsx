@@ -128,7 +128,7 @@ class Create extends React.Component<{}, ICreate> {
   }
   public handleCreateConfirm = () => {
     const formData = new FormData();
-    if (this.state.password !== this.state.password) {
+    if (this.state.password !== this.state.confirmpassword) {
       alert("Passwords do not match");
       return;
     }

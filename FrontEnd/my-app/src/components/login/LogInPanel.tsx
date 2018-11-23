@@ -17,6 +17,7 @@ import Create from './Create';
 import Forgot from './Forgot';
 import Loading from '../Loading';
 import CustomChatBot from '../MainScreen/CustomChatBot';
+import PhotoChatBot from '../MainScreen/PhotoChatBot';
 
 interface ILogInState {
         correctLogin: boolean,
@@ -73,10 +74,15 @@ class LogInPanel extends React.Component<WithStyles<typeof styles>, ILogInState>
                 );
         }
 
+        public setLogIn =() => {
+                this.setState({
+                        correctLogin: true
+                })
+        }
         public makeLogIn = () => {
                 return (
                         <div>
-                                <CustomChatBot/>
+                                <CustomChatBot logIn={this.setLogIn} setGuest={this.setUserNameAndPass}/>
                                 <div style={{ alignItems: 'center', paddingTop: '15%', paddingBottom: '20px' }}
                                         className={this.props.classes.root}>
                                         <TextField
@@ -105,9 +111,17 @@ class LogInPanel extends React.Component<WithStyles<typeof styles>, ILogInState>
                 )
         }
 
+        public setUserNameAndPass = (guestUser: any, guestPass: any) => {
+                this.setState({
+                        username: guestUser,
+                        password: guestPass
+                })
+        }
+
         public makePhotoScreen = () => {
                 return (
                         <div>
+                                <PhotoChatBot username={this.state.username}/>
                                 <div className={this.props.classes.root}>
                                         <h2 style={{ color: 'black' }}>Your Photos </h2>
                                         <this.makeSideBar />
