@@ -11,7 +11,7 @@ import deepPurple from '@material-ui/core/colors/deepPurple'
 import ListItemText from '@material-ui/core/ListItemText';
 import MenuItem from '@material-ui/core/MenuItem';
 import PhotoScreen from '../MainScreen/PhotoScreen'
-import { Drawer, List, ListItem, IconButton, Tooltip } from '../../../node_modules/@material-ui/core';
+import { Drawer, List, ListItem, IconButton, Tooltip, DialogContentText, DialogActions } from '../../../node_modules/@material-ui/core';
 import { Theme } from '../../../node_modules/@material-ui/core';
 import Create from './Create';
 import Forgot from './Forgot';
@@ -31,7 +31,8 @@ interface ILogInState {
         username: any,
         loading: boolean,
         anyErrors: boolean,
-        editPassword: boolean
+        editPassword: boolean,
+        confirmation: boolean
 }
 
 const styles = (theme: Theme) =>
@@ -39,7 +40,6 @@ const styles = (theme: Theme) =>
                 root: {
                 },
                 cssRoot: {
-                        paddingBottom: "10px",
                         fontWeight: "bold",
                         color: theme.palette.getContrastText(deepPurple[500]),
                         backgroundColor: deepPurple[500],
@@ -48,8 +48,8 @@ const styles = (theme: Theme) =>
                         },
                         height: '50px',
                         width: '200px',
-                        fontSize: '30px',
-                        textAlign: 'center'
+                        fontSize: '25px',
+                        textAlign: 'center',
                 },
                 profileDiv: {
                         textAlign: 'center',
@@ -81,7 +81,8 @@ class LogInPanel extends React.Component<WithStyles<typeof styles>, ILogInState>
                         username: "",
                         loading: false,
                         anyErrors: false,
-                        editPassword: false
+                        editPassword: false,
+                        confirmation: false
                 })
 
                 this.handleLogInClick = this.handleLogInClick.bind(this);
@@ -206,7 +207,7 @@ class LogInPanel extends React.Component<WithStyles<typeof styles>, ILogInState>
                                                                 <ListItemText primary="Change password" />
                                                         </ListItem>
                                                         <ListItem button={true}
-                                                                onClick={this.handleDeleteButton}
+                                                                onClick={()=>{this.handleDelete(true)}}
                                                                 style={{ textAlign: 'left' }}>
                                                                 <ListItemText primary="Delete Account" />
                                                         </ListItem>
@@ -216,6 +217,7 @@ class LogInPanel extends React.Component<WithStyles<typeof styles>, ILogInState>
                                                 open={this.state.editPassword}
                                                 onClose={this.handleChangePassword} />
                                 </DialogContent>
+                                <this.confirmDelete/>
                         </Dialog>
                 );
         }
@@ -226,11 +228,40 @@ class LogInPanel extends React.Component<WithStyles<typeof styles>, ILogInState>
                 })
         }
 
+        public handleDelete = (state: boolean) =>{
+                this.setState({
+                        confirmation: state
+                })
+        }
+
         public handleDeleteButton = () => {
                 this.deleteAccount(this.state.username);
                 this.handleProfileExit();
                 this.handleLogOut();
         }
+
+        public confirmDelete = () => {
+                return (
+                  <Dialog open={this.state.confirmation}
+                    onClose={() => {this.handleDelete(false)}}>
+                    <DialogContent>
+                      <DialogContentText>
+                        Do you wish to delete {this.state.username}?
+                      </DialogContentText>
+                    </DialogContent>
+                    <DialogActions>
+                      <DialogActions>
+                        <Button variant="outlined" onClick={this.handleDeleteButton} color="primary">
+                          Yes
+                      </Button>
+                        <Button variant="outlined" onClick={()=>{this.handleDelete(false)}} color="primary">
+                          No
+                      </Button>
+                      </DialogActions>
+                    </DialogActions>
+                  </Dialog>
+                );
+              }
 
         public async deleteAccount(userId: string) {
                 const response = await fetch("https://photostorageapi.azurewebsites.net/api/Users/" + userId, {

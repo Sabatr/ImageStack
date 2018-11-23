@@ -131,7 +131,11 @@ class Create extends React.Component<{}, ICreate> {
   }
   public handleOnCreateClose = () => {
     this.setState({
-      createOpen: false
+      createOpen: false,
+      username: "",
+      password: "",
+      confirmpassword: "",
+      email: "",
     })
   }
   public handleCreateConfirm = () => {

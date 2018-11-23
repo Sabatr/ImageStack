@@ -169,7 +169,7 @@ class Index extends React.Component<IProps, IState> {
                 <Tooltip title="Delete"><IconButton onClick={this.handleDeleteClick}>
                   <Delete />
                 </IconButton></Tooltip>
-                <Tooltip title="Share"><ShareButton photo={this.state.selectedPhoto} /></Tooltip>
+                <ShareButton photo={this.state.selectedPhoto} />
               </div>
               :
               <div>
