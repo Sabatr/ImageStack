@@ -5,13 +5,17 @@ import DialogTitle from '@material-ui/core/DialogTitle';
 import DialogContent from '@material-ui/core/DialogContent';
 import DialogActions from '@material-ui/core/DialogActions';
 import TextField from '@material-ui/core/TextField';
+import Loading from '../Loading';
+import SuccessDialog from './SuccessDialog';
 
 interface ICreate {
   createOpen: boolean,
+  success: boolean,
   username: any,
   password: any,
   confirmpassword: any,
-  email: any
+  email: any,
+  loading: boolean
 }
 
 class Create extends React.Component<{}, ICreate> {
@@ -22,7 +26,9 @@ class Create extends React.Component<{}, ICreate> {
       username: "",
       password: "",
       confirmpassword: "",
-      email: ""
+      email: "",
+      loading: false,
+      success: false
     })
   }
   public render() {
@@ -30,6 +36,8 @@ class Create extends React.Component<{}, ICreate> {
       <div>
         <Button onClick={this.handleOnCreate}>Create Account</Button>
         <this.makeCreate />
+        <Loading loaded={this.state.loading} />
+        <SuccessDialog isOpen={this.state.success} setSuccessful={this.setSuccess}/>
       </div>
     );
   }
@@ -127,30 +135,53 @@ class Create extends React.Component<{}, ICreate> {
     })
   }
   public handleCreateConfirm = () => {
+    this.isLoading();
     const formData = new FormData();
     if (this.state.password !== this.state.confirmpassword) {
+      this.hasLoaded();
       alert("Passwords do not match");
       return;
     }
-    formData.append("userName",this.state.username);
-    formData.append("password",this.state.password);
-    formData.append("email",this.state.email);
-    formData.append("photos","");
+    formData.append("userName", this.state.username);
+    formData.append("password", this.state.password);
+    formData.append("email", this.state.email);
+    formData.append("photos", "");
     this.addToAPI(formData);
     this.handleOnCreateClose();
   }
 
   public async addToAPI(formData: FormData) {
     const response = await fetch("https://photostorageapi.azurewebsites.net/api/Users", {
-			body: formData,
-			headers: {'cache-control': 'no-cache'},
-			method: 'POST'
+      body: formData,
+      headers: { 'cache-control': 'no-cache' },
+      method: 'POST'
     })
     if (!response.ok) {
       alert(response.statusText);
     } else {
-      alert("Success")
+      this.setState({
+        success: true
+      })
     }
+    this.hasLoaded();
+  }
+
+  public isLoading = () => {
+    this.setState({
+      loading: true
+    })
+  }
+
+  public hasLoaded = () => {
+    this.setState({
+      loading: false
+    })
+  }
+
+  public setSuccess = (isSuccessful: boolean) => {
+    this.setState({
+      success: isSuccessful
+    })
   }
 }
 

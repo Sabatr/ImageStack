@@ -73,6 +73,7 @@ class AddDialog extends React.Component<IProps, IState> {
                             id="outlined-password-input"
                             margin="dense"
                             label="Description"
+                            multiline={true}
                             rows={4}
                             rowsMax={4}
                             fullWidth={true}
