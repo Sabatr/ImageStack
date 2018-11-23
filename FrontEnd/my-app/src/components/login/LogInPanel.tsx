@@ -7,11 +7,11 @@ import DialogContent from '@material-ui/core/DialogContent';
 import createStyles from '@material-ui/core/styles/createStyles';
 import withStyles, { WithStyles } from '@material-ui/core/styles/withStyles';
 import withRoot from '../MainScreen/WithRoot';
-import purple from '@material-ui/core/colors/purple'
+import deepPurple from '@material-ui/core/colors/deepPurple'
 import ListItemText from '@material-ui/core/ListItemText';
 import MenuItem from '@material-ui/core/MenuItem';
 import PhotoScreen from '../MainScreen/PhotoScreen'
-import { Drawer, List, ListItem, IconButton, Typography, Tooltip } from '../../../node_modules/@material-ui/core';
+import { Drawer, List, ListItem, IconButton, Tooltip } from '../../../node_modules/@material-ui/core';
 import { Theme } from '../../../node_modules/@material-ui/core';
 import Create from './Create';
 import Forgot from './Forgot';
@@ -37,18 +37,33 @@ interface ILogInState {
 const styles = (theme: Theme) =>
         createStyles({
                 root: {
-                        color: theme.palette.background.paper
                 },
                 cssRoot: {
-                        color: theme.palette.getContrastText(purple[500]),
-                        backgroundColor: purple[500],
+                        paddingBottom: "10px",
+                        fontWeight: "bold",
+                        color: theme.palette.getContrastText(deepPurple[500]),
+                        backgroundColor: deepPurple[500],
                         '&:hover': {
-                                backgroundColor: purple[700],
+                                backgroundColor: deepPurple[700],
                         },
+                        height: '50px',
+                        width: '200px',
+                        fontSize: '30px',
+                        textAlign: 'center'
                 },
                 profileDiv: {
                         textAlign: 'center',
                         display: 'in-line'
+                },
+                profile: {
+                        maxWidth: '100px',
+                        maxHeight: '100px',
+                        minWidth: '100px',
+                        minHeight: '100px',
+                        backgroundColor: "#673ab7",
+                        '&:hover': {
+                                backgroundColor: deepPurple[700]
+                        }
                 }
         });
 
@@ -89,13 +104,15 @@ class LogInPanel extends React.Component<WithStyles<typeof styles>, ILogInState>
         }
         public makeLogIn = () => {
                 return (
-                        <div>
+                        <>
                                 <CustomChatBot logIn={this.setLogIn} setGuest={this.setUserNameAndPass} />
-                                <div style={{ alignItems: 'center', paddingTop: '15%', paddingBottom: '20px' }}
+                                <div style={{ alignItems: 'center', paddingBottom: '20px' }}
                                         className={this.props.classes.root}>
                                         <TextField
+                                                style={{ width: "500px", fontSize: "50px" }}
                                                 id="standard-search"
                                                 label="User Name"
+                                                autoFocus={true}
                                                 onChange={this.handleUserChange}
                                                 error={this.state.anyErrors}
                                                 type="search"
@@ -103,6 +120,7 @@ class LogInPanel extends React.Component<WithStyles<typeof styles>, ILogInState>
                                 </div>
                                 <div style={{ paddingBottom: '20px' }}>
                                         <TextField
+                                                style={{ width: "500px", fontSize: "50px" }}
                                                 id="outlined-password-input"
                                                 label="Password"
                                                 type="password"
@@ -110,12 +128,13 @@ class LogInPanel extends React.Component<WithStyles<typeof styles>, ILogInState>
                                                 error={this.state.anyErrors}
                                                 autoComplete="current-password" />
                                 </div>
-                                <div>
-                                        <Button className={this.props.classes.cssRoot} onClick={this.handleLogInClick}>Log In </Button>
+                                <div style={{ paddingBottom: '20px' }}>
+                                        <Button variant="raised" className={this.props.classes.cssRoot} onClick={this.handleLogInClick}>Log In </Button>
                                 </div>
                                 <Create />
                                 <Forgot />
-                        </div>
+
+                        </>
                 )
         }
 
@@ -145,12 +164,19 @@ class LogInPanel extends React.Component<WithStyles<typeof styles>, ILogInState>
         public makeSideBar = () => {
                 return (
                         <div className={this.props.classes.profileDiv}>
-                                <Typography variant="h2">THIS IS THE TITLE</Typography>
                                 <Tooltip title="Profile">
                                         <IconButton
-                                                style={{ maxWidth: '100px', maxHeight: '100px', minWidth: '100px', minHeight: '100px' }}
-                                                onClick={this.handleMenuOpen}>
-                                                <AccountBox style={{ maxWidth: '75px', maxHeight: '75px', minWidth: '75px', minHeight: '75px' }} />
+                                                className={this.props.classes.profile}
+                                                onClick={this.handleMenuOpen}
+                                        >
+                                                <AccountBox style={{
+                                                        maxWidth:
+                                                                '75px',
+                                                        maxHeight: '75px',
+                                                        minWidth: '75px',
+                                                        minHeight: '75px',
+                                                        color: 'white'
+                                                }} />
                                         </IconButton>
                                 </Tooltip>
                                 <Drawer anchor="right" open={this.state.open} onClose={this.handleMenuClose}>

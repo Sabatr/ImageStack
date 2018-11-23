@@ -33,12 +33,12 @@ class Create extends React.Component<{}, ICreate> {
   }
   public render() {
     return (
-      <div>
-        <Button onClick={this.handleOnCreate}>Create Account</Button>
+      <>
+        <Button variant="outlined" style={{width: '200px'}} onClick={this.handleOnCreate}>Create Account</Button>
         <this.makeCreate />
         <Loading loaded={this.state.loading} />
         <SuccessDialog message="Log in successful!" isOpen={this.state.success} setSuccessful={this.setSuccess}/>
-      </div>
+      </>
     );
   }
 

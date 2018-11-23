@@ -49,7 +49,8 @@ const styles = (theme: Theme) =>
     dialogTitle: {
       margin: theme.spacing.unit,
       fontSize: 20,
-      paddingTop: 15
+      paddingTop: 15,
+      paddingLeft: 15
     },
     description: {
       wordWrap: 'break-word',

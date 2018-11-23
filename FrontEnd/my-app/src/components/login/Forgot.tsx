@@ -19,16 +19,16 @@ class Forgot extends React.Component<{},IForgot> {
     }
     public render() {
         return (
-            <div>
-                <Button onClick={this.handleForgotPassword}>Forgot Password </Button>
+            <>
+                <Button variant="outlined" style={{width: '200px'}} onClick={this.handleForgotPassword}>Forgot Password </Button>
                 <this.makeForgot/>
-            </div>
+            </>
         );
     }
 
     public makeForgot = () => {
         return (
-                <div>
+                <>
                     <Dialog
                         open={this.state.forgot}
                         aria-labelledby="form-dialog-title"
@@ -45,7 +45,7 @@ class Forgot extends React.Component<{},IForgot> {
                     />
                     </DialogContent>
                     <DialogActions>
-                            <Button  color="primary" onClick={this.handleForgotPasswordClose}>
+                            <Button color="primary" onClick={this.handleForgotPasswordClose}>
                                     Cancel
                             </Button>
                             <Button color="primary" onClick={this.handleForgotConfirm}>
@@ -53,7 +53,7 @@ class Forgot extends React.Component<{},IForgot> {
                             </Button>
                             </DialogActions>
                     </Dialog>
-                </div>
+                </>
         );
     }
     
